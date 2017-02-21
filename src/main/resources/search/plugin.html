@@ -1,0 +1,218 @@
+${common}
+
+<script src="/system/console/search/scripts.js" type="text/javascript"></script>
+<link href="/system/console/search/styles.css" rel="stylesheet"/>
+
+<p class="statline ui-state-highlight">
+    Search for bundles, decompile classes, view services or quickly enter configurations.
+</p>
+
+<form id="search-form" method="GET">
+    <table class="nicetable ui-widget">
+        <thead class="ui-widget-header">
+        <tr>
+            <th colspan="2" class="ui-widget-header">Search</th>
+        </tr>
+        </thead>
+        <tbody class="ui-widget-content">
+		<tr>
+			<td style="width: 10%">Phrase</td>
+			<td style="width: 90%"><input name="phrase" value="" style="width:100%" class="ui-state-default ui-corner-all" autofocus></td>
+		</tr>
+        <tr>
+            <td style="width: 10%">Provider</td>
+            <td style="width: 90%">
+                <label title="Bundle by symbolic name or description">
+					<input name="provider" type="checkbox" value="bundle" class="ui-state-default ui-corner-all" checked>
+					Bundle
+				</label>
+                <label title="Bundle class by its name">
+					<input name="provider" type="checkbox" value="class" class="ui-state-default ui-corner-all" checked>
+					Class
+				</label>
+                <label title="OSGi configuration manager entry by PID, label or description">
+					<input name="provider" type="checkbox" value="configuration" class="ui-state-default ui-corner-all" checked>
+					Configuration
+				</label>
+                <label title="OSGi service by PID, label or description">
+					<input name="provider" type="checkbox" value="service" class="ui-state-default ui-corner-all" checked>
+					Service
+				</label>
+            </td>
+        </tr>
+		<tr>
+			<td style="width: 10%">Options</td>
+			<td style="width: 90%">
+				<label title="OSGi related data can vary over the time (e.g bundle state). Set synced mode to always see actual data in results.">
+					<span>Mode</span>
+					<select name="cached" class="ui-state-default ui-corner-all">
+						<option value="true" selected>Cached</option>
+						<option value="false">Synced</option>
+					</select>
+				</label>
+				<label title="Cut off results found to concrete count.">
+					<span>Result limit</span>
+					<input name="resultLimit" value="60" style="width: 50px;" class="ui-state-default ui-corner-all" type="number" min="1" max="9999">
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 10%">Progress</td>
+			<td style="width: 90%" class="progress">
+				<span class="spinner done"></span>
+				<span class="text">Ready</span>
+			</td>
+		</tr>
+        </tbody>
+    </table>
+</form>
+<div id="search-results">
+    <script type="text/x-handlebars-template">
+        <p class="statline ui-state-highlight">
+			For selected:
+
+			<span class="select-actions">
+				<a class="select-all" href="javascript:">Select all</a>
+				<a class="deselect-all" href="javascript:">Deselect all</a>
+				<a class="search-classes" href="javascript:">Decompile & search</a>
+			</span>
+
+			<span class="about" style="float: right">
+				Phrase: '{{params.phrase}}', elapsed: {{duration}} ms, result count: {{results.length}}, <a href="{{url}}" download>as JSON</a>
+			</span>
+        </p>
+
+        <table class="nicetable ui-widget">
+            <thead class="ui-widget-header">
+            <tr>
+				<th class="ui-widget-header" style="width: 3%">&nbsp;</th>
+                <th class="ui-widget-header" style="width: 7%">Provider</th>
+                <th class="ui-widget-header" style="width: 30%">Label</th>
+                <th class="ui-widget-header" style="width: 50%">Description</th>
+                <th class="ui-widget-header" style="width: 10%">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="ui-widget-content">
+                {{#each results}}
+                <tr class="result" data-result='{{json this}}'>
+					<td style="width: 3%"><input type="checkbox" name="result" value="{{id}}"/></td>
+                    <td style="width: 7%">{{provider}}</td>
+                    <td style="width: 30%">{{label}}</td>
+                    <td style="width: 50%">{{breaklines description}}</td>
+                    <td style="width: 10%">
+                        {{#if context.bundleDownloadUrl}}
+                            <a href="{{context.bundleDownloadUrl}}" class="bundle-download ui-button ui-state-default ui-corner-all" title="Download bundle">
+                                <span class="ui-icon ui-icon-disk"></span>
+                            </a>
+                        {{/if}}
+                        {{#if context.consoleUrl}}
+                            <a href="{{context.consoleUrl}}" class="bundle-console ui-button ui-state-default ui-corner-all" title="Show details">
+                                <span class="ui-icon ui-icon-search"></span>
+                            </a>
+                        {{/if}}
+                        {{#if context.bundleClassesUrl}}
+                            <a href="{{context.bundleClassesUrl}}" class="bundle-classes ui-button ui-state-default ui-corner-all" title="Show class tree">
+                                <span class="ui-icon ui-icon-folder-open"></span>
+                            </a>
+                        {{/if}}
+                        {{#if context.classDecompileUrl}}
+                            <a href="{{context.classDecompileUrl}}" class="class-decompile ui-button ui-state-default ui-corner-all" title="Decompile class">
+                                <span class="ui-icon ui-icon-lightbulb"></span>
+                            </a>
+                        {{/if}}
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="4">Lack of results for specified phrase.</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </script>
+</div>
+
+<script id="class-decompile-template" type="text/x-handlebars-template">
+    <div class="dialog dialog-overflow dialog-class-decompile">
+        <pre class="class-source">{{classSource}}</pre>
+    </div>
+</script>
+
+<script id="class-bundle-template" type="text/x-handlebars-template">
+    <div class="dialog dialog-class-bundle">
+        <ol class="list">
+            {{#each results}}
+                <li>
+                    <a href="{{context.classDecompileUrl}}" class="class-decompile">{{description}}</a>
+                </li>
+            {{/each}}
+        </ol>
+    </div>
+</script>
+
+<script id="bundle-classes-template" type="text/x-handlebars-template">
+    <div class="dialog dialog-bundle-classes">
+        <div class="tree"></div>
+    </div>
+</script>
+
+<script id="search-classes-template" type="text/x-handlebars-template">
+	<div class="dialog dialog-search-classes">
+		<form action="javascript:" method="post">
+			<div class="ui-widget-content no-border">
+				<table class="input nicetable ui-widget">
+					<tbody class="ui-widget-content">
+					<tr>
+						<td style="width: 10%">Text</td>
+						<td style="width: 90%"><input name="text" value="" style="width:100%" class="ui-state-default ui-corner-all" autofocus></td>
+					</tr>
+					<tr>
+						<td style="width: 10%">Actions</td>
+						<td style="width: 90%" class="progress">
+							<a href="javascript" class="class-decompile-start ui-button ui-state-default ui-corner-all" title="Start">
+								<span class="ui-icon ui-icon-play"> Start</span>
+							</a>
+
+							<a href="javascript" class="class-decompile-stop ui-button ui-state-default ui-corner-all" title="Stop" style="display: none">
+								<span class="ui-icon ui-icon-stop"> Stop</span>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 10%">Progress</td>
+						<td style="width: 90%" class="progress">
+							<span class="spinner done"></span>
+							<span class="text">Ready</span>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+
+				<br/>
+
+				<div id="search-classes-results"></div>
+			</div>
+		</form>
+	</div>
+</script>
+
+<script id="search-classes-results-template" type="text/x-handlebars-template">
+	{{#each partialResults}}
+		<div class="result">
+			<div class="header ui-widget-header ui-corner-all">
+				<a href="{{decompileUrl}}" class="class-decompile" title="Decompile class">{{className}} ({{bundleId}})</a>
+			</div>
+			<ul {{#ifCond contexts.length '<=' 1}}style="display: none"{{/ifCond}}>
+				{{#each contexts}}
+					<li><a href="#search-class-result-{{@../index}}-{{@index}}">{{inc @index}}</a></li>
+				{{/each}}
+			</ul>
+			{{#each contexts}}
+				<div id="search-class-result-{{@../index}}-{{@index}}">
+					<pre class="class-source">{{raw this}}</pre>
+				</div>
+			{{/each}}
+		</div>
+	{{/each}}
+</script>
+

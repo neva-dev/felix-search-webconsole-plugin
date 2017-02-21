@@ -1,0 +1,28 @@
+#search-results table {
+  table-layout: fixed;
+}
+
+#search-results td {
+  word-wrap: break-word;
+}
+
+#search-classes-results .result .header {
+  padding: 3px;
+  border-bottom: 0;
+}
+
+#search-classes-results .result {
+  border-bottom: 0;
+}
+
+#search-classes-results .result:last-child {
+  border: 1px solid #aaa;
+}
+
+#search-classes-results .result .header a {
+  text-decoration: none !important;
+}
+
+#search-classes-results .result .ui-tabs-nav li a {
+  padding: 0.1em 0.3em !important;
+}
