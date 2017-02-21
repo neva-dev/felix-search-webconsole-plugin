@@ -9,13 +9,20 @@
 Search for bundles, decompile classes, view services and quickly enter configurations.
 Works on OSGi distributions based on Apache Felix such as Apache Sling, Apache Karaf, Apache ServiceMix etc.
 
-![Overview](doc/overview.png)
-
 ## Features:
 
 * searching for bundles, services, configurations and classes (with wildcard support),
+
+![Overview](doc/overview.png)
+
 * searching in decompiled classes sources that come from selected elements (e.g multiple bundles),
+
+![Overview](doc/decompile-search.png)
+
 * bundle class tree view with jumping between decompiled class sources,
+
+![Overview](doc/bundle-tree-view.png)
+
 * one-click bundle JAR download.
 
 You liked plugin? Please don't forget to star this project on GitHub :)
