@@ -51,7 +51,7 @@ If your container is available on different URL than http://localhost:8181/syste
 
 ## Legal notice
 
-Any usage of that tool and legal consequences must be considered as done at your own risk. 
+Any usage of that tool and legal consequences must be considered as done at own risk. 
 For instance, decompiled source code can be protected by copyrights and author does not take any responsibility for such usages.
 
 Using that tool is absolutely optional. Original purpose of usage of built-in decompiler is to quickly view class sources used at runtime that are even available in public Internet, so that code debugging can take less time.
