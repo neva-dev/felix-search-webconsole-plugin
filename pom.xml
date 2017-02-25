@@ -56,7 +56,7 @@
     </developers>
 
     <build>
-        <resources>
+        <!--<resources>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
             </resource>
@@ -67,7 +67,7 @@
                 </includes>
                 <filtering>false</filtering>
             </resource>
-        </resources>
+        </resources>-->
 
         <plugins>
             <plugin>
