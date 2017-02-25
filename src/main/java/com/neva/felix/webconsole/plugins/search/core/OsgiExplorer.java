@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -61,28 +62,50 @@ public class OsgiExplorer {
 	}
 
 	public File findDir(Long bundleId) {
-		return new File(String.format(BUNDLE_PATH_FORMAT, context.getProperty(BUNDLE_STORAGE_PROP), bundleId));
+		String bundleStorage = context.getProperty(BUNDLE_STORAGE_PROP);
+		LOG.debug("bundle id: '{}', bundle storage: '{}'", bundleStorage);
+		String bundlePath = String.format(BUNDLE_PATH_FORMAT, bundleStorage, bundleId);
+		LOG.debug("bundle id: '{}', bundle path: '{}'", bundleId, bundlePath);
+		return new File(bundlePath);
 	}
 
 	public File findJar(Long bundleId) {
-		return findJar(findDir(bundleId));
+		File bundleDir = findDir(bundleId);
+		LOG.debug("bundle id: '{}', bundle dir: '{}'", bundleId, bundleDir);
+		return findJar(bundleDir);
 	}
 
 	public File findJar(File bundleDir) {
-		if (bundleDir.exists()) {
-			List<File> files = FluentIterable.from(FileUtils.listFiles(bundleDir, new String[]{JAR_EXT}, true)).filter(new Predicate<File>() {
-				@Override
-				public boolean apply(File file) {
-					return file.getName().equalsIgnoreCase(BUNDLE_JAR_FILE);
-				}
-			}).toSortedList(new Comparator<File>() {
-				@Override
-				public int compare(File f1, File f2) {
-					return f2.getAbsolutePath().compareTo(f1.getAbsolutePath());
-				}
-			});
+		boolean bundleDirExists = false;
 
-			return Iterables.getFirst(files, null);
+		try {
+			bundleDirExists = bundleDir.exists();
+		} catch (SecurityException se) {
+			LOG.error("error while checking if file: '{}' exists", bundleDir, se);
+		}
+
+		try {
+			if (bundleDirExists) {
+				Collection<File> files = FileUtils.listFiles(bundleDir, new String[]{JAR_EXT}, true);
+				LOG.debug("files inside '{}': {}", bundleDir, files);
+				List<File> filteredFiles = FluentIterable.from(files).filter(new Predicate<File>() {
+					@Override
+					public boolean apply(File file) {
+						return file.getName().equalsIgnoreCase(BUNDLE_JAR_FILE);
+					}
+				}).toSortedList(new Comparator<File>() {
+					@Override
+					public int compare(File f1, File f2) {
+						return f2.getAbsolutePath().compareTo(f1.getAbsolutePath());
+					}
+				});
+
+				return Iterables.getFirst(filteredFiles, null);
+			} else {
+				LOG.warn("bundle dir: '{}' does not exist", bundleDir);
+			}
+		} catch (SecurityException se) {
+			LOG.error("error while getting absolute paths for files inside '{}'", bundleDir, se);
 		}
 
 		return null;
@@ -109,7 +132,9 @@ public class OsgiExplorer {
 	}
 
 	public String decompileClass(Long bundleId, String className) {
-		return decompileClass(findJar(bundleId), className);
+		File jarFile = findJar(bundleId);
+		LOG.debug("jar file for bundle id: '{}': '{}'", bundleId, jarFile);
+		return decompileClass(jarFile, className);
 	}
 
 	public String decompileClass(File jar, String className) {
@@ -117,23 +142,27 @@ public class OsgiExplorer {
 		String path = StringUtils.replace(className, ".", "/");
 
 		try {
-			final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			try {
+			try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
 				try (OutputStreamWriter writer = new OutputStreamWriter(stream)) {
 					DecompilerSettings settings = DecompilerSettings.javaDefaults();
-					settings.setTypeLoader(new JarTypeLoader(new JarFile(jar)));
+
+					JarFile jarFile = new JarFile(jar);
+					JarTypeLoader jarTypeLoader = new JarTypeLoader(jarFile);
+					settings.setTypeLoader(jarTypeLoader);
 					settings.setForceExplicitImports(true);
 					settings.setForceExplicitTypeArguments(true);
 
 					Decompiler.decompile(path, new PlainTextOutput(writer), settings);
 					stream.flush();
+				} catch (SecurityException se) {
+					LOG.error("access to the file: '{}' is denied by security manager", jar, se);
+				} catch (IOException ioe) {
+					LOG.error("exception while creating JAR file object for '{}'", jar, ioe);
 				}
-			} finally {
-				stream.close();
 				source = new String(stream.toByteArray(), Charset.defaultCharset());
 			}
-		} catch (final IOException e) {
-			// handle error
+		} catch (IOException ioe){
+			LOG.error("exception while closing ByteArrayOutputStream", ioe);
 		}
 
 		return source;
