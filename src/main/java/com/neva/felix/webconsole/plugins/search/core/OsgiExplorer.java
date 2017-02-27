@@ -129,8 +129,16 @@ public class OsgiExplorer {
 					settings.setForceExplicitImports(true);
 					settings.setForceExplicitTypeArguments(true);
 
-					Decompiler.decompile(path, new PlainTextOutput(writer), settings);
+					try {
+						Decompiler.decompile(path, new PlainTextOutput(writer), settings);
+					} catch (Throwable throwable) {
+						LOG.error("logging throwable for path: '{}'", path, throwable);
+						throw new RuntimeException("Troubles while decompiling: '"
+														+ path + "'", throwable);
+					}
 					stream.flush();
+				} catch (Exception e) {
+					LOG.error("catch me: '{}'", path, e);
 				}
 			} finally {
 				stream.close();
