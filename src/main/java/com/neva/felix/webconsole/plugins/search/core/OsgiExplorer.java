@@ -61,7 +61,11 @@ public class OsgiExplorer {
 	}
 
 	public File findDir(Long bundleId) {
-		return new File(String.format(BUNDLE_PATH_FORMAT, context.getProperty(BUNDLE_STORAGE_PROP), bundleId));
+		return new File(String.format(BUNDLE_PATH_FORMAT, getBundleDir(), bundleId));
+	}
+
+	private String getBundleDir() {
+		return StringUtils.defaultIfBlank(context.getProperty(BUNDLE_STORAGE_PROP), System.getProperty("user.dir") + "/felix-cache");
 	}
 
 	public File findJar(Long bundleId) {
