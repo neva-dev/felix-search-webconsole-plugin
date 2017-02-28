@@ -41,6 +41,10 @@
         </license>
     </licenses>
 
+    <distributionManagement>
+        <downloadUrl>https://github.com/neva-dev/felix-search-webconsole-plugin/releases</downloadUrl>
+    </distributionManagement>
+
     <organization>
         <name>Neva Development</name>
         <url>http://www.neva.zone</url>
