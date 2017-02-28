@@ -48,7 +48,7 @@ If your container is available on different URL than *http://localhost:8181/syst
 
 `mvn clean install sling:install -Dfelix.url=http://localhost:8080/felix/console -Dfelix.user=foo -Dfelix.password=bar`
 
-### Boot delegation
+### Known issues
 
 On pure Felix distribution, for instance `com.sun.*` package is not available by default, but it is required by decompiler to work.
 To fix that problem just include packages within boot delegation in a same way as Karaf does in *config.properties*:
