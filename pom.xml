@@ -79,7 +79,7 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
-                <version>3.0.0</version>
+                <version>3.2.0</version>
                 <configuration>
                     <instructions>
                         <Bundle-Name>Apache Felix Web Console Search Plugin</Bundle-Name>
