@@ -42,9 +42,25 @@ Do not hesistate to fork and create pull requests.
 
 ## Configuration
 
-If your container is available on different URL than http://localhost:8181/system/console, just override properties in following way:
+### Deployment
 
-`mvn clean install sling:install -Dfelix.url=http://localhost:8080/felix/console -Dfelix.user=admin -Dfelix.password=admin`
+If your container is available on different URL than *http://localhost:8181/system/console*, just override properties in following way:
+
+`mvn clean install sling:install -Dfelix.url=http://localhost:8080/felix/console -Dfelix.user=foo -Dfelix.password=bar`
+
+### Boot delegation
+
+On pure Felix distribution, for instance `com.sun.*` package is not available by default, but it is required by decompiler to work.
+To fix that problem just include packages within boot delegation in a same way as Karaf does in *config.properties*:
+
+```$ini
+org.osgi.framework.bootdelegation = \
+    com.sun.*, \
+    sun.*
+```
+
+Also, by default, bundle storage directory is not specified in Felix distribution.
+Plugin assumes that if property `org.osgi.framework.storage` is not defined, directory *./felix-cache* will be used instead.
 
 ## License
 **Search Web Console Plugin** is licensed under [Apache License, Version 2.0 (the "License")](https://www.apache.org/licenses/LICENSE-2.0.txt)
