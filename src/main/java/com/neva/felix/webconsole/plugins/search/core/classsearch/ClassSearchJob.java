@@ -1,12 +1,10 @@
 package com.neva.felix.webconsole.plugins.search.core.classsearch;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.neva.felix.webconsole.plugins.search.core.BundleClass;
 import com.neva.felix.webconsole.plugins.search.core.OsgiExplorer;
 import com.neva.felix.webconsole.plugins.search.core.SearchJob;
 import com.neva.felix.webconsole.plugins.search.core.SearchUtils;
-import org.osgi.framework.Bundle;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,9 +12,9 @@ import java.util.Set;
 
 public class ClassSearchJob extends SearchJob {
 
-    private transient final Set<BundleClass> classes = Sets.newLinkedHashSet();
-
     private transient final List<ClassSearchResult> results = Lists.newLinkedList();
+
+    private transient final Set<BundleClass> classes;
 
     private final String phrase;
 
@@ -24,25 +22,12 @@ public class ClassSearchJob extends SearchJob {
 
     private List<ClassSearchResult> partialResults = Collections.emptyList();
 
-    public ClassSearchJob(OsgiExplorer osgiExplorer, String phrase) {
+    public ClassSearchJob(OsgiExplorer osgiExplorer, String phrase, Set<BundleClass> classes) {
         super(osgiExplorer);
         this.phrase = phrase;
+        this.classes = classes;
+
         this.step = "Gathering";
-    }
-
-    public ClassSearchJob search(Bundle bundle) {
-        classes.addAll(Sets.newLinkedHashSet(osgiExplorer.findClasses(bundle)));
-        return this;
-    }
-
-    public ClassSearchJob search(BundleClass clazz) {
-        classes.add(clazz);
-        return this;
-    }
-
-    public ClassSearchJob contextLineCount(int count) {
-        this.contextLineCount = count;
-        return this;
     }
 
     @Override
@@ -60,8 +45,7 @@ public class ClassSearchJob extends SearchJob {
                 }
             }
 
-            progress = ((double) count / (double) classes.size()) * 100.0d;
-            count++;
+            increment();
         }
     }
 

@@ -33,6 +33,11 @@ public abstract class SearchJob implements Runnable, Serializable {
         progress = 100;
     }
 
+    protected void increment() {
+        count++;
+        progress = ((double) count / (double) total) * 100.0d;
+    }
+
     protected abstract void perform();
 
     public double getProgress() {

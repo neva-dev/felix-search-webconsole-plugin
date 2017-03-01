@@ -27,12 +27,10 @@ public class SearchMonitor<T extends SearchJob> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T start(T job) {
+	public void start(T job) {
 		final Future<T> future = (Future<T>) executor.submit(job);
 
 		jobs.put(job.getId(), new SearchJobDescriptor<>(job, future));
-
-		return job;
 	}
 
 	public boolean stop(ClassSearchJob job) {
