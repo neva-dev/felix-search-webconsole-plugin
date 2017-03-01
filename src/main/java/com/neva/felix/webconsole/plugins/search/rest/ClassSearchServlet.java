@@ -1,7 +1,7 @@
 package com.neva.felix.webconsole.plugins.search.rest;
 
-import com.neva.felix.webconsole.plugins.search.core.ClassSearchJob;
-import com.neva.felix.webconsole.plugins.search.core.ClassSearchMonitor;
+import com.neva.felix.webconsole.plugins.search.core.classsearch.ClassSearchJob;
+import com.neva.felix.webconsole.plugins.search.core.classsearch.ClassSearchMonitor;
 import com.neva.felix.webconsole.plugins.search.core.OsgiExplorer;
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
