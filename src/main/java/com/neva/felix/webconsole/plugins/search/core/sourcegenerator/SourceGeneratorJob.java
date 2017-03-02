@@ -66,6 +66,8 @@ public class SourceGeneratorJob extends SearchJob {
         } finally {
             IOUtils.closeQuietly(out);
         }
+
+        step = "Done";
     }
 
     public File getZipFile() {

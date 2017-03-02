@@ -47,6 +47,8 @@ public class ClassSearchJob extends SearchJob {
 
             increment();
         }
+
+        step = "Done";
     }
 
     public ClassSearchJob poll() {
