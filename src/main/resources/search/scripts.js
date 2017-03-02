@@ -221,24 +221,45 @@ $(function () {
         });
     });
 
+    function getSelectedResults() {
+        var $results = $('.result', $results).filter(function () {
+            return $('[name=result]', this).prop('checked');
+        });
+
+        return $results.map(function () {
+            var $result = $(this);
+            var config = $result.data('result');
+
+            return config;
+        }).get();
+    }
+
+    function getSelectedBundleData() {
+        var data = {
+            bundleIds: [],
+            bundleClasses: []
+        };
+
+        _.each(getSelectedResults(), function (result) {
+            var ctx = result.context;
+
+            if (ctx.bundleId && ctx.className) {
+                data.bundleClasses.push(ctx.bundleId + ',' + ctx.className);
+            } else if (ctx.bundleId) {
+                data.bundleIds.push(ctx.bundleId);
+            }
+        });
+
+        data.total = data.bundleIds.length + data.bundleClasses.length;
+
+        return data;
+    }
+
     // Search classes form
     (function () {
         var searchClassesResultsTemplate = Handlebars.compile($('#search-classes-results-template').html());
         var jobCurrent = null;
         var jobPoll = null;
-
-        function getSelectedResults() {
-            var $results = $('.result', $results).filter(function () {
-                return $('[name=result]', this).prop('checked');
-            });
-
-            return $results.map(function () {
-                var $result = $(this);
-                var config = $result.data('result');
-
-                return config;
-            }).get();
-        }
 
         function start() {
             if (jobPoll != null) {
@@ -251,20 +272,7 @@ $(function () {
             var $startButton = $('.class-decompile-start', $form);
             var $stopButton = $('.class-decompile-stop', $form);
 
-            var results = getSelectedResults();
-            var bundleIds = [];
-            var bundleClasses = [];
-
-            _.each(results, function (result) {
-                var ctx = result.context;
-
-                if (ctx.bundleId && ctx.className) {
-                    bundleClasses.push(ctx.bundleId + ',' + ctx.className);
-                } else if (ctx.bundleId) {
-                    bundleIds.push(ctx.bundleId);
-                }
-            });
-
+            var bundleData = getSelectedBundleData();
             var $results = $('#search-classes-results');
 
             $.ajax({
@@ -272,8 +280,8 @@ $(function () {
                 url: pluginRoot + '/class-search',
                 data: {
                     phrase: $('input[name=text]', $form).val(),
-                    bundleId: bundleIds,
-                    bundleClass: bundleClasses
+                    bundleId: bundleData.bundleIds,
+                    bundleClass: bundleData.bundleClasses
                 },
                 beforeSend: function () {
                     $results.empty();
