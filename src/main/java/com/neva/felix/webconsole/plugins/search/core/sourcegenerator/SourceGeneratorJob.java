@@ -19,15 +19,15 @@ public class SourceGeneratorJob extends SearchJob {
 
     private static final Logger LOG = LoggerFactory.getLogger(SourceGeneratorJob.class);
 
-    private transient final Set<BundleClass> classes;
-
-    private static final String ZIP_FILE_PREFIX = "source-generate";
+    private static final String ZIP_FILE_PREFIX = "source-generate_";
 
     private static final String ZIP_SUFFIX = ".zip";
 
     private static final String JAVA_SUFFIX = ".java";
 
-    private String zipPath;
+    private transient final Set<BundleClass> classes;
+
+    private transient File zipFile;
 
     public SourceGeneratorJob(OsgiExplorer osgiExplorer, Set<BundleClass> classes) {
         super(osgiExplorer);
@@ -41,15 +41,13 @@ public class SourceGeneratorJob extends SearchJob {
         step = "Generating";
 
         ZipOutputStream out = null;
-        File file;
         try {
-            file = File.createTempFile(ZIP_FILE_PREFIX, ZIP_SUFFIX);
-            zipPath = file.getAbsolutePath();
-            out = new ZipOutputStream(new FileOutputStream(file));
+            zipFile = File.createTempFile(ZIP_FILE_PREFIX, ZIP_SUFFIX);
+            out = new ZipOutputStream(new FileOutputStream(zipFile));
 
             for (BundleClass clazz : classes) {
                 try {
-                    final ZipEntry entry = new ZipEntry(clazz.getClassName() + JAVA_SUFFIX);
+                    final ZipEntry entry = new ZipEntry(clazz.getClassPath() + JAVA_SUFFIX);
                     byte[] source = osgiExplorer.decompileClass(clazz).getBytes(Charsets.UTF_8);
 
                     out.putNextEntry(entry);
@@ -69,8 +67,8 @@ public class SourceGeneratorJob extends SearchJob {
         }
     }
 
-    public String getZipPath() {
-        return zipPath;
+    public File getZipFile() {
+        return zipFile;
     }
 
 }

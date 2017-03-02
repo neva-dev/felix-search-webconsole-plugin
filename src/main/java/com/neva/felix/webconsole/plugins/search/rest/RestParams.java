@@ -2,6 +2,7 @@ package com.neva.felix.webconsole.plugins.search.rest;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,8 @@ public class RestParams {
     private static final String BUNDLE_ID_PROP = "bundleId[]";
 
     private static final String BUNDLE_CLASS_PROP = "bundleClass[]";
+
+    private static final String DOWNLOAD_PARAM = "download";
 
     private final HttpServletRequest request;
 
@@ -48,6 +51,14 @@ public class RestParams {
         final String[] values = request.getParameterValues(BUNDLE_CLASS_PROP);
 
         return ArrayUtils.isEmpty(values) ? Collections.<String>emptyList() : Lists.newArrayList(values);
+    }
+
+    public boolean getBoolean(String param) {
+        return BooleanUtils.toBoolean(StringUtils.trimToEmpty(request.getParameter(param)));
+    }
+
+    public boolean isDownload() {
+        return getBoolean(DOWNLOAD_PARAM);
     }
 
 }

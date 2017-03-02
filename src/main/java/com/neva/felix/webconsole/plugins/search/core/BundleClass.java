@@ -1,46 +1,51 @@
 package com.neva.felix.webconsole.plugins.search.core;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.osgi.framework.Bundle;
 
 public class BundleClass {
 
-	private Bundle bundle;
+    private Bundle bundle;
 
-	private String className;
+    private String className;
 
-	public BundleClass(Bundle bundle, String className) {
-		this.bundle = bundle;
-		this.className = className;
-	}
+    public BundleClass(Bundle bundle, String className) {
+        this.bundle = bundle;
+        this.className = className;
+    }
 
-	public Bundle getBundle() {
-		return bundle;
-	}
+    public Bundle getBundle() {
+        return bundle;
+    }
 
-	public String getClassName() {
-		return className;
-	}
+    public String getClassName() {
+        return className;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+    public String getClassPath() {
+        return StringUtils.replace(className, ".", "/");
+    }
 
-		BundleClass that = (BundleClass) o;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-		return new EqualsBuilder()
-				.append(bundle, that.bundle)
-				.append(className, that.className)
-				.isEquals();
-	}
+        BundleClass that = (BundleClass) o;
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder()
-				.append(bundle)
-				.append(className)
-				.toHashCode();
-	}
+        return new EqualsBuilder()
+                .append(bundle, that.bundle)
+                .append(className, that.className)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(bundle)
+                .append(className)
+                .toHashCode();
+    }
 }

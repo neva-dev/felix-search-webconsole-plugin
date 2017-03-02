@@ -401,4 +401,30 @@ $(function () {
             start();
         });
     }());
+
+    // Generate sources
+   (function () {
+       $body.delegate('.generate-sources', 'click', function () {
+            var bundleData = getSelectedBundleData();
+
+            $.ajax({
+                type: 'POST',
+                url: pluginRoot + '/source-generate',
+                data: {
+                    bundleId: bundleData.bundleIds,
+                    bundleClass: bundleData.bundleClasses
+                },
+                success: function (response) {
+                    var job = response.data;
+
+                    location.href = pluginRoot + '/source-generate?jobId=' + job.id;
+                },
+                error: function () {
+                    openAlert('Cannot start source generation. Internal server error.');
+                },
+            });
+
+            return false;
+        });
+    }());
 });
