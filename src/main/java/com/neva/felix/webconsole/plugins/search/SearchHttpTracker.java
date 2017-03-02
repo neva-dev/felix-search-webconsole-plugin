@@ -1,11 +1,6 @@
 package com.neva.felix.webconsole.plugins.search;
 
-import com.neva.felix.webconsole.plugins.search.rest.BundleClassesServlet;
-import com.neva.felix.webconsole.plugins.search.rest.BundleDownloadServlet;
-import com.neva.felix.webconsole.plugins.search.rest.ByPhraseServlet;
-import com.neva.felix.webconsole.plugins.search.rest.ClassDecompileServlet;
-import com.neva.felix.webconsole.plugins.search.rest.ClassSearchServlet;
-import com.neva.felix.webconsole.plugins.search.rest.RestServlet;
+import com.neva.felix.webconsole.plugins.search.rest.*;
 import com.google.common.collect.ImmutableSet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -61,7 +56,8 @@ public class SearchHttpTracker extends ServiceTracker {
 				new BundleDownloadServlet(context),
 				new BundleClassesServlet(context),
 				new ClassDecompileServlet(context),
-				new ClassSearchServlet(context)
+				new ClassSearchServlet(context),
+				new SourceGenerateServlet(context)
 		);
 	}
 }

@@ -1,7 +1,5 @@
 package com.neva.felix.webconsole.plugins.search.core;
 
-import com.neva.felix.webconsole.plugins.search.core.classsearch.ClassSearchJob;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -33,7 +31,7 @@ public class SearchMonitor<T extends SearchJob> {
 		jobs.put(job.getId(), new SearchJobDescriptor<>(job, future));
 	}
 
-	public boolean stop(ClassSearchJob job) {
+	public boolean stop(T job) {
 		SearchJobDescriptor<T> descriptor = jobs.get(job.getId());
 		if (descriptor == null) {
 			return false;
