@@ -47,8 +47,9 @@ public class SourceGeneratorJob extends SearchJob {
 
             for (BundleClass clazz : classes) {
                 try {
-                    final ZipEntry entry = new ZipEntry(clazz.getClassPath() + JAVA_SUFFIX);
-                    byte[] source = osgiExplorer.decompileClass(clazz).getBytes(Charsets.UTF_8);
+                    final byte[] source = osgiExplorer.decompileClass(clazz).getBytes(Charsets.UTF_8);
+                    final String path = clazz.getBundle().getSymbolicName() + "/" + clazz.getClassPath() + JAVA_SUFFIX;
+                    final ZipEntry entry = new ZipEntry(path);
 
                     out.putNextEntry(entry);
                     out.write(source);
