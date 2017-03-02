@@ -53,12 +53,12 @@ public class SourceGeneratorJob extends SearchJob {
                     out.putNextEntry(entry);
                     out.write(source);
                     out.closeEntry();
-
-                    increment();
                 } catch (Exception e) {
                     LOG.warn("Cannot generate sources for class {} form bundle {}", clazz.getClassName(),
                             clazz.getBundle().getBundleId());
                 }
+
+                increment();
             }
         } catch (IOException e) {
             LOG.error("IO error related with ZIP file in temporary directory.", e);
