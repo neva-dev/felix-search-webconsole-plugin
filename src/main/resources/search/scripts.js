@@ -515,10 +515,14 @@ $(function () {
             var elements = results.length == 1 ? ("'" + results[0].label + "'") : results.length + " elements";
             openDialog(generateSourcesTemplate(), "Generate sources for " + elements, {
                 modal: true,
+                width: 480,
+                height: 200,
                 close: function () {
                     stop();
                 }
             });
+
+            start();
         });
 
         $body.delegate('.source-generate-start', 'click', function () {

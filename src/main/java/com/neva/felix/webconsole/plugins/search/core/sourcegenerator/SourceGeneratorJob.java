@@ -26,6 +26,8 @@ public class SourceGeneratorJob extends SearchJob {
 
     private static final String JAVA_SUFFIX = ".java";
 
+    private static final String ZIP_NAME = "sources.zip";
+
     private transient final Set<BundleClass> classes;
 
     private String downloadUrl;
@@ -71,7 +73,7 @@ public class SourceGeneratorJob extends SearchJob {
         }
 
         if (zipFile != null) {
-            downloadUrl = FileDownloadServlet.url(osgiExplorer.getContext(), zipFile.getAbsolutePath(), "sourcez.zip");
+            downloadUrl = FileDownloadServlet.url(osgiExplorer.getContext(), zipFile.getAbsolutePath(), ZIP_NAME);
             step = "Done";
         } else {
             step = "Ended with error";
