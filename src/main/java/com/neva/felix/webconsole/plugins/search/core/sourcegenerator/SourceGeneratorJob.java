@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.neva.felix.webconsole.plugins.search.core.BundleClass;
 import com.neva.felix.webconsole.plugins.search.core.OsgiExplorer;
 import com.neva.felix.webconsole.plugins.search.core.SearchJob;
+import com.neva.felix.webconsole.plugins.search.rest.FileDownloadServlet;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class SourceGeneratorJob extends SearchJob {
 
     private transient final Set<BundleClass> classes;
 
-    private transient File zipFile;
+    private String downloadUrl;
 
     public SourceGeneratorJob(OsgiExplorer osgiExplorer, Set<BundleClass> classes) {
         super(osgiExplorer);
@@ -41,6 +42,8 @@ public class SourceGeneratorJob extends SearchJob {
         step = "Generating";
 
         ZipOutputStream out = null;
+        File zipFile = null;
+
         try {
             zipFile = File.createTempFile(ZIP_FILE_PREFIX, ZIP_SUFFIX);
             out = new ZipOutputStream(new FileOutputStream(zipFile));
@@ -67,11 +70,15 @@ public class SourceGeneratorJob extends SearchJob {
             IOUtils.closeQuietly(out);
         }
 
-        step = "Done";
+        if (zipFile != null) {
+            downloadUrl = FileDownloadServlet.url(osgiExplorer.getContext(), zipFile.getAbsolutePath(), "sourcez.zip");
+            step = "Done";
+        } else {
+            step = "Ended with error";
+        }
     }
 
-    public File getZipFile() {
-        return zipFile;
+    public String getDownloadUrl() {
+        return downloadUrl;
     }
-
 }

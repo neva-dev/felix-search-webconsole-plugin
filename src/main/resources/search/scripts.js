@@ -298,10 +298,7 @@ $(function () {
                     jobPoll = setInterval(function () {
                         $.ajax({
                             type: 'GET',
-                            url: pluginRoot + '/class-search',
-                            data: {
-                                jobId: job.id
-                            },
+                            url: pluginRoot + '/class-search?jobId=' + job.id,
                             success: function (response) {
                                 var job = response.data;
 
@@ -404,8 +401,23 @@ $(function () {
 
     // Generate sources
    (function () {
-       $body.delegate('.generate-sources', 'click', function () {
+        var resultsTemplate = Handlebars.compile($('#source-generate-results-template').html());
+        var jobCurrent = null;
+        var jobPoll = null;
+
+        function start() {
+            if (jobPoll != null) {
+                return;
+            }
+
+            var $form = $('.dialog-source-generate');
+            var $progressSpinner = $('.progress .spinner', $form);
+            var $progressText = $('.progress .text', $form);
+            var $startButton = $('.source-generate-start', $form);
+            var $stopButton = $('.source-generate-stop', $form);
+
             var bundleData = getSelectedBundleData();
+            var $results = $('#source-generate-results');
 
             $.ajax({
                 type: 'POST',
@@ -414,17 +426,115 @@ $(function () {
                     bundleId: bundleData.bundleIds,
                     bundleClass: bundleData.bundleClasses
                 },
+                beforeSend: function () {
+                    $results.empty();
+                    $progressText.text('Please wait...');
+                    $progressSpinner.removeClass('done');
+                },
                 success: function (response) {
                     var job = response.data;
 
-                    location.href = pluginRoot + '/source-generate?jobId=' + job.id;
+                    $stopButton.show();
+                    $startButton.hide();
+
+                    jobCurrent = job;
+                    jobPoll = setInterval(function () {
+                        $.ajax({
+                            type: 'GET',
+                            url: pluginRoot + '/source-generate?jobId=' + job.id,
+                            success: function (response) {
+                                var job = response.data;
+
+                                if (job.progress == 100) {
+                                    stop();
+
+                                    $results.html(resultsTemplate(job));
+                                } else {
+                                    // Display percentage only it total is calculated
+                                    if (job.total <= 0) {
+                                        $progressText.text(job.step);
+                                    } else {
+                                        $progressText.text(job.step + ' ' + job.progress.toFixed(2) + '% (' + job.count + ' / ' + job.total + ')');
+                                    }
+                                }
+                            },
+                            error: function () {
+                                openAlert('Cannot poll source generation. Internal server error.');
+                            },
+                        });
+                    }, 1000);
                 },
                 error: function () {
                     openAlert('Cannot start source generation. Internal server error.');
                 },
             });
+        }
+
+        function stop() {
+            if (jobCurrent == null || jobPoll == null) {
+                return;
+            }
+
+            var $form = $('.dialog-source-generate');
+            var $progressSpinner = $('.progress .spinner', $form);
+            var $progressText = $('.progress .text', $form);
+            var $startButton = $('.source-generate-start', $form);
+            var $stopButton = $('.source-generate-stop', $form);
+
+            $.ajax({
+                type: 'DELETE',
+                url: pluginRoot + '/source-generate?jobId=' + jobCurrent.id,
+                success: function (response) {
+                    var job = response.data;
+
+                    clearInterval(jobPoll);
+                    $progressSpinner.addClass('done');
+                    $progressText.text('Completed');
+                    $stopButton.hide();
+                    $startButton.show();
+
+                    jobPoll = null;
+                    jobCurrent = null;
+                },
+                error: function () {
+                    openAlert('Cannot stop source generation. Internal server error.');
+                }
+            });
 
             return false;
+        }
+
+        var generateSourcesTemplate = Handlebars.compile($('#source-generate-template').html());
+        $body.delegate('.source-generate', 'click', function () {
+            var results = getSelectedResults();
+            if (!results.length) {
+                openAlert("Please select elements for which sources will be generated.", "Error");
+                return;
+            }
+
+            var elements = results.length == 1 ? ("'" + results[0].label + "'") : results.length + " elements";
+            openDialog(generateSourcesTemplate(), "Generate sources for " + elements, {
+                modal: true,
+                close: function () {
+                    stop();
+                }
+            });
+        });
+
+        $body.delegate('.source-generate-start', 'click', function () {
+            start();
+
+            return false;
+        });
+
+        $body.delegate('.source-generate-stop', 'click', function () {
+            stop();
+
+            return false;
+        });
+
+        $body.delegate('.dialog-source-generate form', 'submit', function () {
+            start();
         });
     }());
 });

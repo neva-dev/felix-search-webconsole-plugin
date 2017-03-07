@@ -57,7 +57,8 @@ public class SearchHttpTracker extends ServiceTracker {
 				new BundleClassesServlet(context),
 				new ClassDecompileServlet(context),
 				new ClassSearchServlet(context),
-				new SourceGenerateServlet(context)
+				new SourceGenerateServlet(context),
+				new FileDownloadServlet(context)
 		);
 	}
 }

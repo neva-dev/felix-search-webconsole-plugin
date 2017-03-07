@@ -14,15 +14,17 @@ import java.util.List;
  */
 public class RestParams {
 
-    private static final String PHRASE_PARAM = "phrase";
+    public static final String PHRASE_PARAM = "phrase";
 
-    private static final String JOB_ID_PARAM = "jobId";
+    public static final String JOB_ID_PARAM = "jobId";
 
-    private static final String BUNDLE_ID_PROP = "bundleId[]";
+    public static final String BUNDLE_ID_PROP = "bundleId[]";
 
-    private static final String BUNDLE_CLASS_PROP = "bundleClass[]";
+    public static final String BUNDLE_CLASS_PROP = "bundleClass[]";
 
-    private static final String DOWNLOAD_PARAM = "download";
+    public static final String PATH_PARAM = "path";
+
+    public static final String NAME_PARAM = "name";
 
     private final HttpServletRequest request;
 
@@ -35,11 +37,11 @@ public class RestParams {
     }
 
     public String getPhrase() {
-        return StringUtils.trimToEmpty(request.getParameter(PHRASE_PARAM));
+        return getString(PHRASE_PARAM);
     }
 
     public String getJobId() {
-        return StringUtils.trimToEmpty(request.getParameter(JOB_ID_PARAM));
+        return getString(JOB_ID_PARAM);
     }
 
     public List<String> getBundleIds() {
@@ -57,8 +59,8 @@ public class RestParams {
         return BooleanUtils.toBoolean(StringUtils.trimToEmpty(request.getParameter(param)));
     }
 
-    public boolean isDownload() {
-        return getBoolean(DOWNLOAD_PARAM);
+    public String getString(String param) {
+        return StringUtils.trimToEmpty(request.getParameter(param));
     }
 
 }

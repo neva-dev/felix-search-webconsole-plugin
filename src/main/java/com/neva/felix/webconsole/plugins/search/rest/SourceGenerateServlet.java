@@ -4,7 +4,6 @@ import com.neva.felix.webconsole.plugins.search.core.BundleClass;
 import com.neva.felix.webconsole.plugins.search.core.OsgiExplorer;
 import com.neva.felix.webconsole.plugins.search.core.SearchMonitor;
 import com.neva.felix.webconsole.plugins.search.core.sourcegenerator.SourceGeneratorJob;
-import com.neva.felix.webconsole.plugins.search.utils.io.FileDownloader;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Set;
 
@@ -71,11 +69,7 @@ public class SourceGenerateServlet extends RestServlet {
             if (job == null) {
                 writeMessage(response, MessageType.ERROR, String.format("Job with ID '%s' is not running so it cannot be polled.", jobId));
             } else {
-                if (params.isDownload()) {
-                    new FileDownloader(response, new FileInputStream(job.getZipFile()), "sources.zip").download();
-                } else {
-                    writeMessage(response, MessageType.SUCCESS, "Job polled properly.", job);
-                }
+                writeMessage(response, MessageType.SUCCESS, "Job polled properly.", job);
             }
         } catch (Exception e) {
             LOG.error("Cannot search classes.", e);
