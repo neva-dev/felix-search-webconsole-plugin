@@ -22,7 +22,7 @@
     <groupId>com.neva.felix</groupId>
     <artifactId>search-webconsole-plugin</artifactId>
     <packaging>bundle</packaging>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.0</version>
     <name>search-webconsole-plugin</name>
     <description>Search everywhere plugin for Apache Felix Web Console</description>
     <inceptionYear>2017</inceptionYear>
@@ -31,7 +31,7 @@
         <url>https://github.com/neva-dev/felix-search-webconsole-plugin</url>
         <connection>scm:git:ssh://git@github.com/neva-dev/felix-search-webconsole-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/neva-dev/felix-search-webconsole-plugin.git</developerConnection>
-        <tag>search-webconsole-plugin-1.0.0</tag>
+        <tag>search-webconsole-plugin-1.1.0</tag>
     </scm>
 
     <licenses>
