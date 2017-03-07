@@ -19,6 +19,10 @@ Works on OSGi distributions based on Apache Felix such as Apache Sling, Apache K
 
 ![Overview](doc/decompile-search.png)
 
+* generating ZIP file with all decompiled class sources from selected elements (e.g multiple bundles),
+
+![Overview](doc/source-generate.png)
+
 * bundle class tree view with jumping between decompiled class sources,
 
 ![Overview](doc/bundle-tree-view.png)
