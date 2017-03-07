@@ -375,9 +375,11 @@ $(function () {
             }
 
             var elements = results.length == 1 ? ("'" + results[0].label + "'") : results.length + " elements";
+
             openDialog(searchClassesTemplate(), "Decompile classes & search in " + elements, {
                 modal: true,
                 close: function () {
+                    $(this).dialog('destroy').remove();
                     stop();
                 }
             });
@@ -446,9 +448,8 @@ $(function () {
                                 var job = response.data;
 
                                 if (job.progress == 100) {
-                                    stop();
-
                                     $results.html(resultsTemplate(job));
+                                    stop();
                                 } else {
                                     // Display percentage only it total is calculated
                                     if (job.total <= 0) {
@@ -513,11 +514,13 @@ $(function () {
             }
 
             var elements = results.length == 1 ? ("'" + results[0].label + "'") : results.length + " elements";
+
             openDialog(generateSourcesTemplate(), "Generate sources for " + elements, {
                 modal: true,
                 width: 480,
                 height: 200,
                 close: function () {
+                    $(this).dialog('destroy').remove();
                     stop();
                 }
             });
