@@ -74,7 +74,8 @@ ${common}
 			<span class="select-actions">
 				<a class="select-all" href="javascript:">Select all</a>
 				<a class="deselect-all" href="javascript:">Deselect all</a>
-				<a class="search-classes" href="javascript:">Decompile & search</a>
+				<a class="search-classes" href="javascript:">Decompile &amp; search</a>
+				<a class="source-generate" href="javascript:">Generate sources</a>
 			</span>
 
 			<span class="about" style="float: right">
@@ -216,3 +217,42 @@ ${common}
 	{{/each}}
 </script>
 
+<script id="source-generate-template" type="text/x-handlebars-template">
+	<div class="dialog dialog-source-generate">
+		<form action="javascript:" method="post">
+			<div class="ui-widget-content no-border">
+				<table class="input nicetable ui-widget">
+					<tbody class="ui-widget-content">
+					<tr>
+						<td style="width: 10%">Actions</td>
+						<td style="width: 90%" class="progress">
+							<a href="javascript" class="source-generate-start ui-button ui-state-default ui-corner-all" title="Start">
+								<span class="ui-icon ui-icon-play"> Start</span>
+							</a>
+
+							<a href="javascript" class="source-generate-stop ui-button ui-state-default ui-corner-all" title="Stop" style="display: none">
+								<span class="ui-icon ui-icon-stop"> Stop</span>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 10%">Progress</td>
+						<td style="width: 90%" class="progress">
+							<span class="spinner done"></span>
+							<span class="text">Ready</span>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+
+				<br/>
+
+				<div id="source-generate-results"></div>
+			</div>
+		</form>
+	</div>
+</script>
+
+<script id="source-generate-results-template" type="text/x-handlebars-template">
+	<p>Sources generated. <a href="{{downloadUrl}}">Download ZIP</a></p>
+</script>

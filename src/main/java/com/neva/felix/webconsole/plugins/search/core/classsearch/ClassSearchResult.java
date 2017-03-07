@@ -1,5 +1,6 @@
-package com.neva.felix.webconsole.plugins.search.core;
+package com.neva.felix.webconsole.plugins.search.core.classsearch;
 
+import com.neva.felix.webconsole.plugins.search.core.BundleClass;
 import com.neva.felix.webconsole.plugins.search.rest.ClassDecompileServlet;
 import org.osgi.framework.BundleContext;
 

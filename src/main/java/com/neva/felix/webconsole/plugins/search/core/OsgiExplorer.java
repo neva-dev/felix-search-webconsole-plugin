@@ -2,9 +2,12 @@ package com.neva.felix.webconsole.plugins.search.core;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.primitives.Longs;
 import com.strobel.assembler.metadata.JarTypeLoader;
 import com.strobel.decompiler.Decompiler;
@@ -13,11 +16,7 @@ import com.strobel.decompiler.PlainTextOutput;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.metatype.MetaTypeInformation;
@@ -34,6 +33,7 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.JarFile;
 
 public class OsgiExplorer {
@@ -146,13 +146,13 @@ public class OsgiExplorer {
         return source;
     }
 
-    public Iterable<BundleClass> findClasses(final Bundle bundle) {
+    public List<BundleClass> findClasses(final Bundle bundle) {
         return FluentIterable.from(new BundleScanner(bundle).findClassNames()).transform(new Function<String, BundleClass>() {
             @Override
             public BundleClass apply(String className) {
                 return new BundleClass(bundle, className);
             }
-        });
+        }).toList();
     }
 
     public Iterable<BundleClass> findClasses(String name) {
@@ -171,9 +171,32 @@ public class OsgiExplorer {
         return results;
     }
 
+    public List<BundleClass> findClasses(List<String> bundleIdAndClassNames) {
+        return FluentIterable.from(bundleIdAndClassNames).transform(new Function<String, BundleClass>() {
+            @Override
+            public BundleClass apply(String bundleIdAndClassName) {
+                List<String> parts = Splitter.on(",").omitEmptyStrings().trimResults().splitToList(bundleIdAndClassName);
+
+                return findClass(parts.get(0), parts.get(1));
+            }
+        }).filter(Predicates.<BundleClass>notNull()).toList();
+    }
+
+    public Set<BundleClass> findClasses(List<String> bundleIds, List<String> bundleClasses) {
+        Set<BundleClass> result = Sets.newLinkedHashSet();
+
+        for (Bundle bundle : findBundles(bundleIds)) {
+            result.addAll(findClasses(bundle));
+        }
+
+        result.addAll(findClasses(bundleClasses));
+
+        return result;
+    }
+
     public BundleClass findClass(Configuration configuration) {
         BundleClass clazz = null;
-        Bundle bundle = null;
+        Bundle bundle;
 
         ServiceReference serviceReference = findServiceReference(configuration.getPid());
         if (serviceReference == null) {
@@ -218,6 +241,15 @@ public class OsgiExplorer {
         final Long longId = Longs.tryParse(id);
 
         return longId != null ? context.getBundle(longId) : null;
+    }
+
+    public Iterable<Bundle> findBundles(List<String> ids) {
+        return FluentIterable.from(ids).transform(new Function<String, Bundle>() {
+            @Override
+            public Bundle apply(String id) {
+                return findBundle(id);
+            }
+        }).filter(Predicates.<Bundle>notNull());
     }
 
     public Bundle findBundle(final Configuration configuration) {

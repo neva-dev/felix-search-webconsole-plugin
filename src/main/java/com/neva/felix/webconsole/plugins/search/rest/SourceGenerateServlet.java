@@ -3,7 +3,7 @@ package com.neva.felix.webconsole.plugins.search.rest;
 import com.neva.felix.webconsole.plugins.search.core.BundleClass;
 import com.neva.felix.webconsole.plugins.search.core.OsgiExplorer;
 import com.neva.felix.webconsole.plugins.search.core.SearchMonitor;
-import com.neva.felix.webconsole.plugins.search.core.classsearch.ClassSearchJob;
+import com.neva.felix.webconsole.plugins.search.core.sourcegenerator.SourceGeneratorJob;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,17 +17,17 @@ import java.util.Set;
 import static com.neva.felix.webconsole.plugins.search.utils.JsonUtils.MessageType;
 import static com.neva.felix.webconsole.plugins.search.utils.JsonUtils.writeMessage;
 
-public class ClassSearchServlet extends RestServlet {
+public class SourceGenerateServlet extends RestServlet {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClassSearchServlet.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SourceGenerateServlet.class);
 
-    public static final String ALIAS_NAME = "class-search";
+    public static final String ALIAS_NAME = "source-generate";
 
-    private final SearchMonitor<ClassSearchJob> monitor;
+    private final SearchMonitor<SourceGeneratorJob> monitor;
 
     private final OsgiExplorer osgiExplorer;
 
-    public ClassSearchServlet(BundleContext bundleContext) {
+    public SourceGenerateServlet(BundleContext bundleContext) {
         super(bundleContext);
         this.monitor = new SearchMonitor<>();
         this.osgiExplorer = new OsgiExplorer(bundleContext);
@@ -48,9 +48,8 @@ public class ClassSearchServlet extends RestServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             final RestParams params = RestParams.from(request);
-            final String phrase = params.getPhrase();
             final Set<BundleClass> classes = osgiExplorer.findClasses(params.getBundleIds(), params.getBundleClasses());
-            final ClassSearchJob job = new ClassSearchJob(osgiExplorer, phrase, classes);
+            final SourceGeneratorJob job = new SourceGeneratorJob(osgiExplorer, classes);
 
             monitor.start(job);
 
@@ -63,13 +62,13 @@ public class ClassSearchServlet extends RestServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            String jobId = RestParams.from(request).getJobId();
-            ClassSearchJob job = monitor.get(jobId);
+            RestParams params = RestParams.from(request);
+            String jobId = params.getJobId();
+            SourceGeneratorJob job = monitor.get(jobId);
 
             if (job == null) {
                 writeMessage(response, MessageType.ERROR, String.format("Job with ID '%s' is not running so it cannot be polled.", jobId));
             } else {
-                job.poll();
                 writeMessage(response, MessageType.SUCCESS, "Job polled properly.", job);
             }
         } catch (Exception e) {
@@ -81,7 +80,7 @@ public class ClassSearchServlet extends RestServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String jobId = RestParams.from(request).getJobId();
-            ClassSearchJob job = monitor.get(jobId);
+            SourceGeneratorJob job = monitor.get(jobId);
 
             if (job == null) {
                 writeMessage(response, MessageType.ERROR, String.format("Job with ID '%s' is not running so it cannot be stopped.", jobId));

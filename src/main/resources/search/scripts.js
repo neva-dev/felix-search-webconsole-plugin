@@ -221,24 +221,45 @@ $(function () {
         });
     });
 
+    function getSelectedResults() {
+        var $results = $('.result', $results).filter(function () {
+            return $('[name=result]', this).prop('checked');
+        });
+
+        return $results.map(function () {
+            var $result = $(this);
+            var config = $result.data('result');
+
+            return config;
+        }).get();
+    }
+
+    function getSelectedBundleData() {
+        var data = {
+            bundleIds: [],
+            bundleClasses: []
+        };
+
+        _.each(getSelectedResults(), function (result) {
+            var ctx = result.context;
+
+            if (ctx.bundleId && ctx.className) {
+                data.bundleClasses.push(ctx.bundleId + ',' + ctx.className);
+            } else if (ctx.bundleId) {
+                data.bundleIds.push(ctx.bundleId);
+            }
+        });
+
+        data.total = data.bundleIds.length + data.bundleClasses.length;
+
+        return data;
+    }
+
     // Search classes form
     (function () {
         var searchClassesResultsTemplate = Handlebars.compile($('#search-classes-results-template').html());
         var jobCurrent = null;
         var jobPoll = null;
-
-        function getSelectedResults() {
-            var $results = $('.result', $results).filter(function () {
-                return $('[name=result]', this).prop('checked');
-            });
-
-            return $results.map(function () {
-                var $result = $(this);
-                var config = $result.data('result');
-
-                return config;
-            }).get();
-        }
 
         function start() {
             if (jobPoll != null) {
@@ -251,20 +272,7 @@ $(function () {
             var $startButton = $('.class-decompile-start', $form);
             var $stopButton = $('.class-decompile-stop', $form);
 
-            var results = getSelectedResults();
-            var bundleIds = [];
-            var bundleClasses = [];
-
-            _.each(results, function (result) {
-                var ctx = result.context;
-
-                if (ctx.bundleId && ctx.className) {
-                    bundleClasses.push(ctx.bundleId + ',' + ctx.className);
-                } else if (ctx.bundleId) {
-                    bundleIds.push(ctx.bundleId);
-                }
-            });
-
+            var bundleData = getSelectedBundleData();
             var $results = $('#search-classes-results');
 
             $.ajax({
@@ -272,8 +280,8 @@ $(function () {
                 url: pluginRoot + '/class-search',
                 data: {
                     phrase: $('input[name=text]', $form).val(),
-                    bundleId: bundleIds,
-                    bundleClass: bundleClasses
+                    bundleId: bundleData.bundleIds,
+                    bundleClass: bundleData.bundleClasses
                 },
                 beforeSend: function () {
                     $results.empty();
@@ -290,10 +298,7 @@ $(function () {
                     jobPoll = setInterval(function () {
                         $.ajax({
                             type: 'GET',
-                            url: pluginRoot + '/class-search',
-                            data: {
-                                jobId: job.id
-                            },
+                            url: pluginRoot + '/class-search?jobId=' + job.id,
                             success: function (response) {
                                 var job = response.data;
 
@@ -370,9 +375,11 @@ $(function () {
             }
 
             var elements = results.length == 1 ? ("'" + results[0].label + "'") : results.length + " elements";
+
             openDialog(searchClassesTemplate(), "Decompile classes & search in " + elements, {
                 modal: true,
                 close: function () {
+                    $(this).dialog('destroy').remove();
                     stop();
                 }
             });
@@ -390,6 +397,150 @@ $(function () {
         });
 
         $body.delegate('.dialog-search-classes form', 'submit', function () {
+            start();
+        });
+    }());
+
+    // Generate sources
+   (function () {
+        var resultsTemplate = Handlebars.compile($('#source-generate-results-template').html());
+        var jobCurrent = null;
+        var jobPoll = null;
+
+        function start() {
+            if (jobPoll != null) {
+                return;
+            }
+
+            var $form = $('.dialog-source-generate');
+            var $progressSpinner = $('.progress .spinner', $form);
+            var $progressText = $('.progress .text', $form);
+            var $startButton = $('.source-generate-start', $form);
+            var $stopButton = $('.source-generate-stop', $form);
+
+            var bundleData = getSelectedBundleData();
+            var $results = $('#source-generate-results');
+
+            $.ajax({
+                type: 'POST',
+                url: pluginRoot + '/source-generate',
+                data: {
+                    bundleId: bundleData.bundleIds,
+                    bundleClass: bundleData.bundleClasses
+                },
+                beforeSend: function () {
+                    $results.empty();
+                    $progressText.text('Please wait...');
+                    $progressSpinner.removeClass('done');
+                },
+                success: function (response) {
+                    var job = response.data;
+
+                    $stopButton.show();
+                    $startButton.hide();
+
+                    jobCurrent = job;
+                    jobPoll = setInterval(function () {
+                        $.ajax({
+                            type: 'GET',
+                            url: pluginRoot + '/source-generate?jobId=' + job.id,
+                            success: function (response) {
+                                var job = response.data;
+
+                                if (job.progress == 100) {
+                                    $results.html(resultsTemplate(job));
+                                    stop();
+                                } else {
+                                    // Display percentage only it total is calculated
+                                    if (job.total <= 0) {
+                                        $progressText.text(job.step);
+                                    } else {
+                                        $progressText.text(job.step + ' ' + job.progress.toFixed(2) + '% (' + job.count + ' / ' + job.total + ')');
+                                    }
+                                }
+                            },
+                            error: function () {
+                                openAlert('Cannot poll source generation. Internal server error.');
+                            },
+                        });
+                    }, 1000);
+                },
+                error: function () {
+                    openAlert('Cannot start source generation. Internal server error.');
+                },
+            });
+        }
+
+        function stop() {
+            if (jobCurrent == null || jobPoll == null) {
+                return;
+            }
+
+            var $form = $('.dialog-source-generate');
+            var $progressSpinner = $('.progress .spinner', $form);
+            var $progressText = $('.progress .text', $form);
+            var $startButton = $('.source-generate-start', $form);
+            var $stopButton = $('.source-generate-stop', $form);
+
+            $.ajax({
+                type: 'DELETE',
+                url: pluginRoot + '/source-generate?jobId=' + jobCurrent.id,
+                success: function (response) {
+                    var job = response.data;
+
+                    clearInterval(jobPoll);
+                    $progressSpinner.addClass('done');
+                    $progressText.text('Completed');
+                    $stopButton.hide();
+                    $startButton.show();
+
+                    jobPoll = null;
+                    jobCurrent = null;
+                },
+                error: function () {
+                    openAlert('Cannot stop source generation. Internal server error.');
+                }
+            });
+
+            return false;
+        }
+
+        var generateSourcesTemplate = Handlebars.compile($('#source-generate-template').html());
+        $body.delegate('.source-generate', 'click', function () {
+            var results = getSelectedResults();
+            if (!results.length) {
+                openAlert("Please select elements for which sources will be generated.", "Error");
+                return;
+            }
+
+            var elements = results.length == 1 ? ("'" + results[0].label + "'") : results.length + " elements";
+
+            openDialog(generateSourcesTemplate(), "Generate sources for " + elements, {
+                modal: true,
+                width: 480,
+                height: 200,
+                close: function () {
+                    $(this).dialog('destroy').remove();
+                    stop();
+                }
+            });
+
+            start();
+        });
+
+        $body.delegate('.source-generate-start', 'click', function () {
+            start();
+
+            return false;
+        });
+
+        $body.delegate('.source-generate-stop', 'click', function () {
+            stop();
+
+            return false;
+        });
+
+        $body.delegate('.dialog-source-generate form', 'submit', function () {
             start();
         });
     }());
