@@ -66,6 +66,10 @@ org.osgi.framework.bootdelegation = \
 Also, by default, bundle storage directory is not specified in Felix distribution.
 Plugin assumes that if property `org.osgi.framework.storage` is not defined, directory *./felix-cache* will be used instead.
 
+## Repository
+
+Plugin is published on BinTray at URL: https://bintray.com/neva-dev/maven-public.
+
 ## License
 **Search Web Console Plugin** is licensed under [Apache License, Version 2.0 (the "License")](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
