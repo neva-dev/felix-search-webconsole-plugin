@@ -68,7 +68,7 @@ Plugin assumes that if property `org.osgi.framework.storage` is not defined, dir
 
 ## Repository
 
-Plugin is published on BinTray at URL: https://bintray.com/neva-dev/maven-public.
+Plugin is published on BinTray: <https://bintray.com/neva-dev/maven-public/felix-search-webconsole-plugin>.
 
 ## License
 **Search Web Console Plugin** is licensed under [Apache License, Version 2.0 (the "License")](https://www.apache.org/licenses/LICENSE-2.0.txt)
