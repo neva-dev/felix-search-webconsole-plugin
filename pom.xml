@@ -55,6 +55,13 @@
         </developer>
     </developers>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray-felix-search-webconsole-plugin</id>
+            <url>https://api.bintray.com/maven/neva-dev/maven-public/felix-search-webconsole-plugin/;publish=1</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <resources>
             <resource>
