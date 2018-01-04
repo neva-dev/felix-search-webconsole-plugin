@@ -76,6 +76,7 @@ ${common}
 				<a class="deselect-all" href="javascript:">Deselect all</a>
 				<a class="search-classes" href="javascript:">Decompile &amp; search</a>
 				<a class="source-generate" href="javascript:">Generate sources</a>
+        <a class="bundle-assemble" href="javascript:">Assemble bundles</a>
 			</span>
 
 			<span class="about" style="float: right">
@@ -170,11 +171,11 @@ ${common}
 					<tr>
 						<td style="width: 10%">Actions</td>
 						<td style="width: 90%" class="progress">
-							<a href="javascript" class="class-decompile-start ui-button ui-state-default ui-corner-all" title="Start">
+							<a href="javascript:" class="class-decompile-start ui-button ui-state-default ui-corner-all" title="Start">
 								<span class="ui-icon ui-icon-play"> Start</span>
 							</a>
 
-							<a href="javascript" class="class-decompile-stop ui-button ui-state-default ui-corner-all" title="Stop" style="display: none">
+							<a href="javascript:" class="class-decompile-stop ui-button ui-state-default ui-corner-all" title="Stop" style="display: none">
 								<span class="ui-icon ui-icon-stop"> Stop</span>
 							</a>
 						</td>
@@ -226,11 +227,11 @@ ${common}
 					<tr>
 						<td style="width: 10%">Actions</td>
 						<td style="width: 90%" class="progress">
-							<a href="javascript" class="source-generate-start ui-button ui-state-default ui-corner-all" title="Start">
+							<a href="javascript:" class="source-generate-start ui-button ui-state-default ui-corner-all" title="Start">
 								<span class="ui-icon ui-icon-play"> Start</span>
 							</a>
 
-							<a href="javascript" class="source-generate-stop ui-button ui-state-default ui-corner-all" title="Stop" style="display: none">
+							<a href="javascript:" class="source-generate-stop ui-button ui-state-default ui-corner-all" title="Stop" style="display: none">
 								<span class="ui-icon ui-icon-stop"> Stop</span>
 							</a>
 						</td>
@@ -255,4 +256,44 @@ ${common}
 
 <script id="source-generate-results-template" type="text/x-handlebars-template">
 	<p>Sources generated. <a href="{{downloadUrl}}">Download ZIP</a></p>
+</script>
+
+<script id="bundle-assemble-template" type="text/x-handlebars-template">
+	<div class="dialog dialog-bundle-assemble">
+		<form action="javascript:" method="post">
+			<div class="ui-widget-content no-border">
+				<table class="input nicetable ui-widget">
+					<tbody class="ui-widget-content">
+					<tr>
+						<td style="width: 10%">Actions</td>
+						<td style="width: 90%" class="progress">
+							<a href="javascript:" class="bundle-assemble-start ui-button ui-state-default ui-corner-all" title="Start">
+								<span class="ui-icon ui-icon-play"> Start</span>
+							</a>
+
+							<a href="javascript:" class="bundle-assemble-stop ui-button ui-state-default ui-corner-all" title="Stop" style="display: none">
+								<span class="ui-icon ui-icon-stop"> Stop</span>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td style="width: 10%">Progress</td>
+						<td style="width: 90%" class="progress">
+							<span class="spinner done"></span>
+							<span class="text">Ready</span>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+
+				<br/>
+
+				<div id="bundle-assemble-results"></div>
+			</div>
+		</form>
+	</div>
+</script>
+
+<script id="bundle-assemble-results-template" type="text/x-handlebars-template">
+	<p>Bundles assembled. <a href="{{downloadUrl}}">Download ZIP</a></p>
 </script>

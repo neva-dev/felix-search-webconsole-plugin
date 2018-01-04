@@ -71,6 +71,10 @@ public class OsgiExplorer {
                 System.getProperty("user.dir") + "/" + BUNDLE_STORAGE_DIR_DEFAULT);
     }
 
+    public File findJar(String bundleId) {
+        return findJar(Long.valueOf(bundleId));
+    }
+
     public File findJar(Long bundleId) {
         return findJar(findDir(bundleId));
     }
@@ -93,6 +97,36 @@ public class OsgiExplorer {
         }
 
         return null;
+    }
+
+    public BundleJar findBundleJar(String bundleId) {
+        BundleJar result = null;
+
+        File jar = findJar(bundleId);
+        Bundle bundle = findBundle(bundleId);
+
+        if (jar != null && bundle != null) {
+            result = new BundleJar(bundle, jar);
+        }
+
+        return result;
+    }
+
+    public Set<BundleJar> findBundleJars(List<String> bundleIds) {
+        Set<BundleJar> result = Sets.newLinkedHashSet();
+
+        for (String bundleId : bundleIds) {
+            BundleJar jar = findBundleJar(bundleId);
+            if (jar != null) {
+                result.add(jar);
+            }
+        }
+
+        return result;
+    }
+
+    public String proposeJarName(Long bundleId) {
+        return proposeJarName(String.valueOf(bundleId));
     }
 
     public String proposeJarName(String bundleId) {

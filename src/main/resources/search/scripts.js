@@ -544,4 +544,149 @@ $(function () {
             start();
         });
     }());
+   
+    // Assemble bundles
+   (function () {
+        var resultsTemplate = Handlebars.compile($('#bundle-assemble-results-template').html());
+        var jobCurrent = null;
+        var jobPoll = null;
+
+        function start() {
+            if (jobPoll != null) {
+                return;
+            }
+
+            var $form = $('.dialog-bundle-assemble');
+            var $progressSpinner = $('.progress .spinner', $form);
+            var $progressText = $('.progress .text', $form);
+            var $startButton = $('.bundle-assemble-start', $form);
+            var $stopButton = $('.bundle-assemble-stop', $form);
+
+            var bundleData = getSelectedBundleData();
+            var $results = $('#bundle-assemble-results');
+
+            $.ajax({
+                type: 'POST',
+                url: pluginRoot + '/bundle-assemble',
+                data: {
+                    bundleId: bundleData.bundleIds
+                },
+                beforeSend: function () {
+                    $results.empty();
+                    $progressText.text('Please wait...');
+                    $progressSpinner.removeClass('done');
+                },
+                success: function (response) {
+                    var job = response.data;
+
+                    $stopButton.show();
+                    $startButton.hide();
+
+                    jobCurrent = job;
+                    jobPoll = setInterval(function () {
+                        $.ajax({
+                            type: 'GET',
+                            url: pluginRoot + '/bundle-assemble?jobId=' + job.id,
+                            success: function (response) {
+                                var job = response.data;
+
+                                if (job.progress == 100) {
+                                    $results.html(resultsTemplate(job));
+                                    stop();
+                                } else {
+                                    // Display percentage only it total is calculated
+                                    if (job.total <= 0) {
+                                        $progressText.text(job.step);
+                                    } else {
+                                        $progressText.text(job.step + ' ' + job.progress.toFixed(2) + '% (' + job.count + ' / ' + job.total + ')');
+                                    }
+                                }
+                            },
+                            error: function () {
+                                openAlert('Cannot poll bundle assembling. Internal server error.');
+                            },
+                        });
+                    }, 1000);
+                },
+                error: function () {
+                    openAlert('Cannot start bundle assembling. Internal server error.');
+                },
+            });
+        }
+
+        function stop() {
+            if (jobCurrent == null || jobPoll == null) {
+                return;
+            }
+
+            var $form = $('.dialog-bundle-assemble');
+            var $progressSpinner = $('.progress .spinner', $form);
+            var $progressText = $('.progress .text', $form);
+            var $startButton = $('.bundle-assemble-start', $form);
+            var $stopButton = $('.bundle-assemble-stop', $form);
+
+            $.ajax({
+                type: 'DELETE',
+                url: pluginRoot + '/bundle-assemble?jobId=' + jobCurrent.id,
+                success: function (response) {
+                    var job = response.data;
+
+                    clearInterval(jobPoll);
+                    $progressSpinner.addClass('done');
+                    $progressText.text('Completed');
+                    $stopButton.hide();
+                    $startButton.show();
+
+                    jobPoll = null;
+                    jobCurrent = null;
+                },
+                error: function () {
+                    openAlert('Cannot stop bundle assembling. Internal server error.');
+                }
+            });
+
+            return false;
+        }
+
+        var generateSourcesTemplate = Handlebars.compile($('#bundle-assemble-template').html());
+        $body.delegate('.bundle-assemble', 'click', function () {
+            var results = getSelectedResults();
+            if (!results.length) {
+                openAlert("Please select elements for which bundles will be assembled.", "Error");
+                return;
+            }
+
+            var elements = results.length == 1 ? ("'" + results[0].label + "'") : results.length + " elements";
+
+            openDialog(generateSourcesTemplate(), "Assemble bundles for " + elements, {
+                modal: true,
+                width: 480,
+                height: 200,
+                close: function () {
+                    $(this).dialog('destroy').remove();
+                    stop();
+                }
+            });
+
+            start();
+        });
+
+        $body.delegate('.bundle-assemble-start', 'click', function () {
+            start();
+
+            return false;
+        });
+
+        $body.delegate('.bundle-assemble-stop', 'click', function () {
+            stop();
+
+            return false;
+        });
+
+        $body.delegate('.dialog-bundle-assemble form', 'submit', function () {
+            start();
+        });
+    }());
+   
+   
 });
