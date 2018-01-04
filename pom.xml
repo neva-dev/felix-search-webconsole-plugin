@@ -31,7 +31,7 @@
         <url>https://github.com/neva-dev/felix-search-webconsole-plugin</url>
         <connection>scm:git:ssh://git@github.com/neva-dev/felix-search-webconsole-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/neva-dev/felix-search-webconsole-plugin.git</developerConnection>
-        <tag>search-webconsole-plugin-1.0.0</tag>
+        <tag>search-webconsole-plugin-1.1.0</tag>
     </scm>
 
     <licenses>
@@ -54,6 +54,13 @@
             <organizationUrl>http://www.neva.zone</organizationUrl>
         </developer>
     </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-felix-search-webconsole-plugin</id>
+            <url>https://api.bintray.com/maven/neva-dev/maven-public/felix-search-webconsole-plugin/;publish=1</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <resources>
