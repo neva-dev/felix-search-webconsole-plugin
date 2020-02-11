@@ -247,6 +247,6 @@
         <felix.url>http://localhost:8080/system/console</felix.url>
         <felix.user>admin</felix.user>
         <felix.password>admin</felix.password>
-        <procyon.version>0.5.32</procyon.version>
+        <procyon.version>0.5.36</procyon.version>
     </properties>
 </project>
