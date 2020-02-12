@@ -59,7 +59,7 @@
         <repository>
             <id>bintray-neva-dev-maven-public</id>
             <name>neva-dev-maven-public</name>
-            <url>https://api.bintray.com/maven/neva-dev/maven-public/felix-search-webconsole-plugin/;publish=1</url>
+            <url>https://api.bintray.com/maven/neva-dev/maven-public/felix-search-webconsole-plugin/;publish=1;override=1</url>
         </repository>
     </distributionManagement>
 
