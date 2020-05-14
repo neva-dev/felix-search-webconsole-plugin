@@ -1,9 +1,9 @@
 ![Neva logo](doc/neva-logo.png)
 
-[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/neva-dev/felix-search-webconsole-plugin.svg?label=License)](http://www.apache.org/licenses/)
 ![GitHub All Releases](https://img.shields.io/github/downloads/neva-dev/felix-search-webconsole-plugin/total)
 [![GitHub stars](https://img.shields.io/github/stars/neva-dev/felix-search-webconsole-plugin.svg)](https://github.com/neva-dev/felix-search-webconsole-plugin/stargazers)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/neva-dev/felix-search-webconsole-plugin.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=%5Bobject%20Object%5D)
+[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/neva-dev/felix-search-webconsole-plugin.svg?label=License)](http://www.apache.org/licenses/)
 
 # Search Web Console Plugin for Apache Felix
 
