@@ -8,6 +8,11 @@ import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/**
+ * @author Mike Strobel
+ * Inspired from code found at https://github.com/mstrobel/procyon.git
+ * com.strobel.assembler.metadata.JarTypeLoader
+ */
 public class JarLoader implements Loader {
     private final JarFile _jarFile;
 

@@ -5,6 +5,8 @@ import java.util.Arrays;
 
 /**
  * @author Mike Strobel
+ * Original code found at https://github.com/mstrobel/procyon.git
+ * com.strobel.assembler.metadata.Buffer
  */
 public class Buffer {
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
