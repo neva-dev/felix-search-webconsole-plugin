@@ -9,13 +9,13 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Longs;
-import com.strobel.assembler.metadata.JarTypeLoader;
-import com.strobel.decompiler.Decompiler;
-import com.strobel.decompiler.DecompilerSettings;
-import com.strobel.decompiler.PlainTextOutput;
+import com.neva.felix.webconsole.plugins.search.decompiler.jd.JarLoader;
+import com.neva.felix.webconsole.plugins.search.decompiler.jd.StringPrinter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jd.core.v1.ClassFileToJavaSourceDecompiler;
+import org.jd.core.v1.api.loader.Loader;
 import org.osgi.framework.*;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -25,11 +25,8 @@ import org.osgi.service.metatype.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -156,27 +153,17 @@ public class OsgiExplorer {
     public String decompileClass(File jar, String className) {
         String source = StringUtils.EMPTY;
         String path = StringUtils.replace(className, ".", "/");
+        ClassFileToJavaSourceDecompiler decompiler = new ClassFileToJavaSourceDecompiler();
 
         try {
-            final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            try {
-                try (OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-                    DecompilerSettings settings = DecompilerSettings.javaDefaults();
-                    settings.setTypeLoader(new JarTypeLoader(new JarFile(jar)));
-                    settings.setForceExplicitImports(true);
-                    settings.setForceExplicitTypeArguments(true);
-
-                    Decompiler.decompile(path, new PlainTextOutput(writer), settings);
-                    stream.flush();
-                }
-            } finally {
-                stream.close();
-                source = new String(stream.toByteArray(), Charset.defaultCharset());
-            }
-        } catch (final IOException e) {
-            // handle error
+            Loader loader = new JarLoader(new JarFile(jar, true));
+            StringPrinter printer = new StringPrinter();
+            printer.setDisplayLineNumbers(true);
+            decompiler.decompile(loader, printer, path);
+            source = printer.toString();
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
         }
-
         return source;
     }
 
