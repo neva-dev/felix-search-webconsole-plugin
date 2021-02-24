@@ -83,9 +83,15 @@ $(function () {
 
     // Viewer for decompiled class source
     var classDecompileTemplate = Handlebars.compile($('#class-decompile-template').html());
+
     function classDecompile(url) {
+        let params = {
+            "decompiler": $("select[name='decompiler']", $form).val(),
+            "lineNumbers": $("select[name='lineNumbers']", $form).val()
+        };
+        let new_url = url + "&" + jQuery.param(params);
         $.ajax({
-            url: url,
+            url: new_url,
             type: 'GET',
             success: function (response) {
                 var html = classDecompileTemplate(response.data);

@@ -1,4 +1,4 @@
-package com.neva.felix.webconsole.plugins.search.decompiler.jd;
+package com.neva.felix.webconsole.plugins.search.decompiler;
 
 import org.jd.core.v1.api.loader.Loader;
 import org.jd.core.v1.api.loader.LoaderException;

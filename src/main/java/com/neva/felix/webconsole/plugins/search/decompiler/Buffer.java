@@ -1,4 +1,4 @@
-package com.neva.felix.webconsole.plugins.search.decompiler.jd;
+package com.neva.felix.webconsole.plugins.search.decompiler;
 
 import java.nio.BufferUnderflowException;
 import java.util.Arrays;

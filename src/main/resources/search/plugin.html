@@ -54,6 +54,20 @@ ${common}
 					<span>Result limit</span>
 					<input name="resultLimit" value="60" style="width: 50px;" class="ui-state-default ui-corner-all" type="number" min="1" max="9999">
 				</label>
+				<label title="Choose the Java decompiler library to use">
+					<span>Decompiler</span>
+					<select name="decompiler" class="ui-state-default ui-corner-all">
+						<option value="JD_CORE" selected>JD-Core</option>
+						<option value="CFR">CFR</option>
+					</select>
+				</label>
+				<label title="Whether to show/hide line number in decompiled classes when supported">
+					<span>Display line numbers</span>
+					<select name="lineNumbers" class="ui-state-default ui-corner-all">
+						<option value="true">Show</option>
+						<option value="false" selected>Hide</option>
+					</select>
+				</label>
 			</td>
 		</tr>
 		<tr>

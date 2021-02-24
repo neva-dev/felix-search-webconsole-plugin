@@ -9,13 +9,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Longs;
-import com.neva.felix.webconsole.plugins.search.decompiler.jd.JarLoader;
-import com.neva.felix.webconsole.plugins.search.decompiler.jd.StringPrinter;
+import com.neva.felix.webconsole.plugins.search.decompiler.DecompilerFactory;
+import com.neva.felix.webconsole.plugins.search.decompiler.Decompilers;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jd.core.v1.ClassFileToJavaSourceDecompiler;
-import org.jd.core.v1.api.loader.Loader;
 import org.osgi.framework.*;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -31,7 +29,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.jar.JarFile;
 
 public class OsgiExplorer {
 
@@ -152,15 +149,18 @@ public class OsgiExplorer {
 
     public String decompileClass(File jar, String className) {
         String source = StringUtils.EMPTY;
-        String path = StringUtils.replace(className, ".", "/");
-        ClassFileToJavaSourceDecompiler decompiler = new ClassFileToJavaSourceDecompiler();
-
         try {
-            Loader loader = new JarLoader(new JarFile(jar, true));
-            StringPrinter printer = new StringPrinter();
-            printer.setDisplayLineNumbers(true);
-            decompiler.decompile(loader, printer, path);
-            source = printer.toString();
+            source = DecompilerFactory.get().decompile(jar, className, false);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return source;
+    }
+
+    public String decompileClass(Decompilers type, boolean showLineNumbers, File jar, String className) {
+        String source = StringUtils.EMPTY;
+        try {
+            source = DecompilerFactory.get(type).decompile(jar, className, showLineNumbers);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
