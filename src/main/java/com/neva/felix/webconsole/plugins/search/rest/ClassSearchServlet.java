@@ -50,7 +50,7 @@ public class ClassSearchServlet extends RestServlet {
             final RestParams params = RestParams.from(request);
             final String phrase = params.getPhrase();
             final Set<BundleClass> classes = osgiExplorer.findClasses(params.getBundleIds(), params.getBundleClasses());
-            final ClassSearchJob job = new ClassSearchJob(osgiExplorer, phrase, classes);
+            final ClassSearchJob job = new ClassSearchJob(osgiExplorer, params.getType(), phrase, classes);
 
             monitor.start(job);
 

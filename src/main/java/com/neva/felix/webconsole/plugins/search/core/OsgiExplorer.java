@@ -139,18 +139,18 @@ public class OsgiExplorer {
         return result;
     }
 
-    public String decompileClass(BundleClass clazz) {
-        return decompileClass(clazz.getBundle().getBundleId(), clazz.getClassName());
+    public String decompileClass(Decompilers type, BundleClass clazz) {
+        return decompileClass(type, clazz.getBundle().getBundleId(), clazz.getClassName());
     }
 
-    public String decompileClass(Long bundleId, String className) {
-        return decompileClass(findJar(bundleId), className);
+    public String decompileClass(Decompilers type, Long bundleId, String className) {
+        return decompileClass(type, findJar(bundleId), className);
     }
 
-    public String decompileClass(File jar, String className) {
+    public String decompileClass(Decompilers type,File jar, String className) {
         String source = StringUtils.EMPTY;
         try {
-            source = DecompilerFactory.get().decompile(jar, className, false);
+            source = DecompilerFactory.get(type).decompile(jar, className, false);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }

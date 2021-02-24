@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.neva.felix.webconsole.plugins.search.core.BundleClass;
 import com.neva.felix.webconsole.plugins.search.core.OsgiExplorer;
 import com.neva.felix.webconsole.plugins.search.core.SearchJob;
+import com.neva.felix.webconsole.plugins.search.decompiler.Decompilers;
 import com.neva.felix.webconsole.plugins.search.rest.FileDownloadServlet;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -29,13 +30,15 @@ public class SourceGeneratorJob extends SearchJob {
     private static final String ZIP_NAME = "sources.zip";
 
     private transient final Set<BundleClass> classes;
+    private final Decompilers type;
 
     private String downloadUrl;
 
-    public SourceGeneratorJob(OsgiExplorer osgiExplorer, Set<BundleClass> classes) {
+    public SourceGeneratorJob(OsgiExplorer osgiExplorer, Decompilers type, Set<BundleClass> classes) {
         super(osgiExplorer);
         this.classes = classes;
         this.step = "Gathering";
+        this.type=type;
     }
 
     @Override
@@ -52,7 +55,7 @@ public class SourceGeneratorJob extends SearchJob {
 
             for (BundleClass clazz : classes) {
                 try {
-                    final byte[] source = osgiExplorer.decompileClass(clazz).getBytes(Charsets.UTF_8);
+                    final byte[] source = osgiExplorer.decompileClass(type, clazz).getBytes(Charsets.UTF_8);
                     final String path = clazz.getBundle().getSymbolicName() + "/" + clazz.getClassPath() + JAVA_SUFFIX;
                     final ZipEntry entry = new ZipEntry(path);
 
