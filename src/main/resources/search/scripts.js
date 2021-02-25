@@ -94,8 +94,9 @@ $(function () {
             url: new_url,
             type: 'GET',
             success: function (response) {
-                var html = classDecompileTemplate(response.data);
-                var title = response.data.className + " (" + response.data.bundleId + ")";
+                let data = response.data || response;
+                var html = classDecompileTemplate(data);
+                var title = data.className + " (" + data.bundleId + ")";
 
                 closeDialog('class-bundle');
                 openDialog(html, title);
