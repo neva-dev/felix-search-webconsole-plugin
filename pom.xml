@@ -246,7 +246,7 @@
             <artifactId>fernflower</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/jars/fernflower-decompiler.jar</systemPath>
+            <systemPath>${project.basedir}/jar-dependencies/fernflower-decompiler.jar</systemPath>
         </dependency>
         <!-- Embedded -->
         <dependency>
