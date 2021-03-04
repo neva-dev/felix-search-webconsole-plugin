@@ -214,7 +214,7 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.webconsole</artifactId>
-            <version>3.0.0</version>
+            <version>4.3.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -297,6 +297,6 @@
         <felix.user>admin</felix.user>
         <felix.password>admin</felix.password>
         <jd-core.version>1.1.3</jd-core.version>
-        <cfr.version>0.152-SNAPSHOT</cfr.version>
+        <cfr.version>0.151</cfr.version>
     </properties>
 </project>
