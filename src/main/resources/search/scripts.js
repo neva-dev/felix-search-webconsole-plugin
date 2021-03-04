@@ -84,7 +84,7 @@ $(function () {
     // Viewer for decompiled class source
     var classDecompileTemplate = Handlebars.compile($('#class-decompile-template').html());
 
-    function classDecompile(url) {
+    function classDecompile(url, targetId) {
         let params = {
             "decompiler": $("select[name='decompiler']", $form).val(),
             "lineNumbers": $("select[name='lineNumbers']", $form).val()
@@ -97,9 +97,13 @@ $(function () {
                 let data = response.data || response;
                 var html = classDecompileTemplate(data);
                 var title = data.className + " (" + data.bundleId + ")";
-
-                closeDialog('class-bundle');
-                openDialog(html, title);
+                let targetElement = $("#" + targetId);
+                if (targetElement.length) {
+                    targetElement.html(html);
+                } else {
+                    closeDialog('class-bundle');
+                    openDialog(html, title);
+                }
                 classSourcePrettyPrint();
             },
             error: function () {
@@ -203,7 +207,7 @@ $(function () {
                     var node = e.node;
 
                     if (node.decompileUrl) {
-                        classDecompile(node.decompileUrl);
+                        classDecompile(node.decompileUrl,"tree-source");
                     }
                 });
             },
