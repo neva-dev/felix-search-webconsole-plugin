@@ -214,7 +214,7 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.webconsole</artifactId>
-            <version>4.3.0</version>
+            <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
