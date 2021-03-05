@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -70,22 +69,20 @@ public class OsgiExplorer {
     }
 
     public File findJar(Long bundleId) {
-        return findJar(findDir(bundleId));
+        File jar = findJar(findDir(bundleId));
+        if (jar == null) {
+            //If jat not found through storage dir, try to resolve bundle location (Sling starter sources jars from maven repository)
+            Bundle bundle = findBundle(bundleId);
+            return new File(StringUtils.replace(bundle.getLocation(), "reference:file:", ""));
+        }
+        return jar;
     }
 
     public File findJar(File bundleDir) {
         if (bundleDir.exists()) {
-            List<File> files = FluentIterable.from(FileUtils.listFiles(bundleDir, new String[]{JAR_EXT}, true)).filter(new Predicate<File>() {
-                @Override
-                public boolean apply(File file) {
-                    return file.getName().equalsIgnoreCase(BUNDLE_JAR_FILE);
-                }
-            }).toSortedList(new Comparator<File>() {
-                @Override
-                public int compare(File f1, File f2) {
-                    return f2.getAbsolutePath().compareTo(f1.getAbsolutePath());
-                }
-            });
+            List<File> files = FluentIterable.from(FileUtils.listFiles(bundleDir, new String[]{JAR_EXT}, true))
+                    .filter(file -> file.getName().equalsIgnoreCase(BUNDLE_JAR_FILE))
+                    .toSortedList((f1, f2) -> f2.getAbsolutePath().compareTo(f1.getAbsolutePath()));
 
             return Iterables.getFirst(files, null);
         }
@@ -147,7 +144,7 @@ public class OsgiExplorer {
         return decompileClass(type, findJar(bundleId), className);
     }
 
-    public String decompileClass(Decompilers type,File jar, String className) {
+    public String decompileClass(Decompilers type, File jar, String className) {
         String source = StringUtils.EMPTY;
         try {
             source = DecompilerFactory.get(type).decompile(jar, className, false);
@@ -259,9 +256,11 @@ public class OsgiExplorer {
     }
 
     public Bundle findBundle(String id) {
-        final Long longId = Longs.tryParse(id);
+        return findBundle(Longs.tryParse(id));
+    }
 
-        return longId != null ? context.getBundle(longId) : null;
+    public Bundle findBundle(Long id) {
+        return id != null ? context.getBundle(id) : null;
     }
 
     public Iterable<Bundle> findBundles(List<String> ids) {
