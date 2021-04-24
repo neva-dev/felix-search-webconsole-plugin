@@ -29,8 +29,10 @@
 #tree-source{
   margin-left: 8px;
 }
+
 .row {
   display: flex;
+  align-items: stretch;
 }
 
 .col {
@@ -39,6 +41,7 @@
   width: 6.25%;
   flex: 1 1 auto;
   border: 2px solid #BBB;
+  overflow: auto;
 }
 
 .col.span2 { width: calc((6.25%*2) + 2.08333333%); }
