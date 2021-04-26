@@ -71,7 +71,7 @@ public class OsgiExplorer {
     public File findJar(Long bundleId) {
         File jar = findJar(findDir(bundleId));
         if (jar == null) {
-            //If jat not found through storage dir, try to resolve bundle location (Sling starter sources jars from maven repository)
+            //If jar not found through storage dir, try to resolve bundle location (Sling starter sources jars from maven repository)
             Bundle bundle = findBundle(bundleId);
             return new File(StringUtils.replace(bundle.getLocation(), "reference:file:", ""));
         }
