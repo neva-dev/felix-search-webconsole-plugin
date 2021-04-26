@@ -49,7 +49,7 @@ public class SourceGenerateServlet extends RestServlet {
         try {
             final RestParams params = RestParams.from(request);
             final Set<BundleClass> classes = osgiExplorer.findClasses(params.getBundleIds(), params.getBundleClasses());
-            final SourceGeneratorJob job = new SourceGeneratorJob(osgiExplorer, classes);
+            final SourceGeneratorJob job = new SourceGeneratorJob(osgiExplorer, params.getType(), classes);
 
             monitor.start(job);
 

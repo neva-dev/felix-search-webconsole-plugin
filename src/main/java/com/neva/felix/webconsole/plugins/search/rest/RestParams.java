@@ -1,6 +1,7 @@
 package com.neva.felix.webconsole.plugins.search.rest;
 
 import com.google.common.collect.Lists;
+import com.neva.felix.webconsole.plugins.search.decompiler.Decompilers;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,8 @@ public class RestParams {
     public static final String PATH_PARAM = "path";
 
     public static final String NAME_PARAM = "name";
+
+    public static final String DECOMPILER = "decompiler";
 
     private final HttpServletRequest request;
 
@@ -61,6 +64,11 @@ public class RestParams {
 
     public String getString(String param) {
         return StringUtils.trimToEmpty(request.getParameter(param));
+    }
+
+    public Decompilers getType() {
+        final String decompiler = StringUtils.trimToEmpty(request.getParameter(DECOMPILER));
+        return StringUtils.isNoneBlank(decompiler) ? Decompilers.valueOf(decompiler) : Decompilers.JD_CORE;
     }
 
 }

@@ -9,10 +9,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Longs;
-import com.strobel.assembler.metadata.JarTypeLoader;
-import com.strobel.decompiler.Decompiler;
-import com.strobel.decompiler.DecompilerSettings;
-import com.strobel.decompiler.PlainTextOutput;
+import com.neva.felix.webconsole.plugins.search.decompiler.DecompilerFactory;
+import com.neva.felix.webconsole.plugins.search.decompiler.Decompilers;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,16 +23,11 @@ import org.osgi.service.metatype.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.jar.JarFile;
 
 public class OsgiExplorer {
 
@@ -76,22 +69,20 @@ public class OsgiExplorer {
     }
 
     public File findJar(Long bundleId) {
-        return findJar(findDir(bundleId));
+        File jar = findJar(findDir(bundleId));
+        if (jar == null) {
+            //If jar not found through storage dir, try to resolve bundle location (Sling starter sources jars from maven repository)
+            Bundle bundle = findBundle(bundleId);
+            return new File(StringUtils.replace(bundle.getLocation(), "reference:file:", ""));
+        }
+        return jar;
     }
 
     public File findJar(File bundleDir) {
         if (bundleDir.exists()) {
-            List<File> files = FluentIterable.from(FileUtils.listFiles(bundleDir, new String[]{JAR_EXT}, true)).filter(new Predicate<File>() {
-                @Override
-                public boolean apply(File file) {
-                    return file.getName().equalsIgnoreCase(BUNDLE_JAR_FILE);
-                }
-            }).toSortedList(new Comparator<File>() {
-                @Override
-                public int compare(File f1, File f2) {
-                    return f2.getAbsolutePath().compareTo(f1.getAbsolutePath());
-                }
-            });
+            List<File> files = FluentIterable.from(FileUtils.listFiles(bundleDir, new String[]{JAR_EXT}, true))
+                    .filter(file -> file.getName().equalsIgnoreCase(BUNDLE_JAR_FILE))
+                    .toSortedList((f1, f2) -> f2.getAbsolutePath().compareTo(f1.getAbsolutePath()));
 
             return Iterables.getFirst(files, null);
         }
@@ -145,38 +136,31 @@ public class OsgiExplorer {
         return result;
     }
 
-    public String decompileClass(BundleClass clazz) {
-        return decompileClass(clazz.getBundle().getBundleId(), clazz.getClassName());
+    public String decompileClass(Decompilers type, BundleClass clazz) {
+        return decompileClass(type, clazz.getBundle().getBundleId(), clazz.getClassName());
     }
 
-    public String decompileClass(Long bundleId, String className) {
-        return decompileClass(findJar(bundleId), className);
+    public String decompileClass(Decompilers type, Long bundleId, String className) {
+        return decompileClass(type, findJar(bundleId), className);
     }
 
-    public String decompileClass(File jar, String className) {
+    public String decompileClass(Decompilers type, File jar, String className) {
         String source = StringUtils.EMPTY;
-        String path = StringUtils.replace(className, ".", "/");
-
         try {
-            final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            try {
-                try (OutputStreamWriter writer = new OutputStreamWriter(stream)) {
-                    DecompilerSettings settings = DecompilerSettings.javaDefaults();
-                    settings.setTypeLoader(new JarTypeLoader(new JarFile(jar)));
-                    settings.setForceExplicitImports(true);
-                    settings.setForceExplicitTypeArguments(true);
-
-                    Decompiler.decompile(path, new PlainTextOutput(writer), settings);
-                    stream.flush();
-                }
-            } finally {
-                stream.close();
-                source = new String(stream.toByteArray(), Charset.defaultCharset());
-            }
-        } catch (final IOException e) {
-            // handle error
+            source = DecompilerFactory.get(type).decompile(jar, className, false);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
         }
+        return source;
+    }
 
+    public String decompileClass(Decompilers type, boolean showLineNumbers, File jar, String className) {
+        String source = StringUtils.EMPTY;
+        try {
+            source = DecompilerFactory.get(type).decompile(jar, className, showLineNumbers);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
         return source;
     }
 
@@ -272,9 +256,11 @@ public class OsgiExplorer {
     }
 
     public Bundle findBundle(String id) {
-        final Long longId = Longs.tryParse(id);
+        return findBundle(Longs.tryParse(id));
+    }
 
-        return longId != null ? context.getBundle(longId) : null;
+    public Bundle findBundle(Long id) {
+        return id != null ? context.getBundle(id) : null;
     }
 
     public Iterable<Bundle> findBundles(List<String> ids) {

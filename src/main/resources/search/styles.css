@@ -26,3 +26,33 @@
 #search-classes-results .result .ui-tabs-nav li a {
   padding: 0.1em 0.3em !important;
 }
+#tree-source{
+  margin-left: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: stretch;
+}
+
+.col {
+  margin-left: 2.08333333%;
+  margin-bottom: 1em;
+  width: 6.25%;
+  flex: 1 1 auto;
+  border: 2px solid #BBB;
+  overflow: auto;
+}
+
+.col.span2 { width: calc((6.25%*2) + 2.08333333%); }
+.col.span3 { width: calc((6.25%*3) + (2.08333333%*2)); }
+.col.span4 { width: calc((6.25%*4) + (2.08333333%*3)); }
+.col.span5 { width: calc((6.25%*5) + (2.08333333%*4)); }
+.col.span6 { width: calc((6.25%*6) + (2.08333333%*5)); }
+.col.span7 { width: calc((6.25%*7) + (2.08333333%*6)); }
+.col.span8 { width: calc((6.25%*8) + (2.08333333%*7)); }
+.col.span9 { width: calc((6.25%*9) + (2.08333333%*8)); }
+.col.span10 { width: calc((6.25%*10) + (2.08333333%*9)); }
+.col.span11 { width: calc((6.25%*11) + (2.08333333%*10)); }
+.col.span12 { width: calc((6.25%*12) + (2.08333333%*11)); }
+
