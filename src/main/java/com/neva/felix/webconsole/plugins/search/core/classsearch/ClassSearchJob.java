@@ -5,6 +5,7 @@ import com.neva.felix.webconsole.plugins.search.core.BundleClass;
 import com.neva.felix.webconsole.plugins.search.core.OsgiExplorer;
 import com.neva.felix.webconsole.plugins.search.core.SearchJob;
 import com.neva.felix.webconsole.plugins.search.core.SearchUtils;
+import com.neva.felix.webconsole.plugins.search.decompiler.Decompilers;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,15 +19,17 @@ public class ClassSearchJob extends SearchJob {
 
     private final String phrase;
 
+    private final Decompilers type;
+
     private int contextLineCount = 5;
 
     private List<ClassSearchResult> partialResults = Collections.emptyList();
 
-    public ClassSearchJob(OsgiExplorer osgiExplorer, String phrase, Set<BundleClass> classes) {
+    public ClassSearchJob(OsgiExplorer osgiExplorer, Decompilers type, String phrase, Set<BundleClass> classes) {
         super(osgiExplorer);
         this.phrase = phrase;
         this.classes = classes;
-
+        this.type= type;
         this.step = "Gathering";
     }
 
@@ -36,7 +39,7 @@ public class ClassSearchJob extends SearchJob {
         step = "Searching";
 
         for (BundleClass clazz : classes) {
-            final String source = osgiExplorer.decompileClass(clazz);
+            final String source = osgiExplorer.decompileClass(type, clazz);
             final List<String> contexts = SearchUtils.findContexts(phrase, source, contextLineCount);
 
             if (!contexts.isEmpty()) {
