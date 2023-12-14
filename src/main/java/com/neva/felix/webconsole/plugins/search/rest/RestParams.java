@@ -2,11 +2,11 @@ package com.neva.felix.webconsole.plugins.search.rest;
 
 import com.google.common.collect.Lists;
 import com.neva.felix.webconsole.plugins.search.decompiler.Decompilers;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 

@@ -2,14 +2,14 @@ package com.neva.felix.webconsole.plugins.search.rest;
 
 import com.neva.felix.webconsole.plugins.search.core.SearchPaths;
 import com.neva.felix.webconsole.plugins.search.utils.io.FileDownloader;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

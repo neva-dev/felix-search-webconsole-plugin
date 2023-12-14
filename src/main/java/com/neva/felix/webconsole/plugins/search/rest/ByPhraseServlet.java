@@ -5,13 +5,13 @@ import com.neva.felix.webconsole.plugins.search.core.SearchProgress;
 import com.neva.felix.webconsole.plugins.search.core.SearchService;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.framework.BundleContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;

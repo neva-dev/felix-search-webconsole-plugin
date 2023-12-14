@@ -1,20 +1,19 @@
 package com.neva.felix.webconsole.plugins.search.plugin;
 
 import com.google.common.collect.ImmutableMap;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.text.StrSubstitutor;
-import org.apache.felix.webconsole.AbstractWebConsolePlugin;
+import org.apache.felix.webconsole.servlet.AbstractServlet;
 import org.osgi.framework.BundleContext;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public abstract class AbstractPlugin extends AbstractWebConsolePlugin {
+public abstract class AbstractPlugin extends AbstractServlet {
 
 	public static final String CATEGORY = "OSGi";
 
@@ -25,7 +24,7 @@ public abstract class AbstractPlugin extends AbstractWebConsolePlugin {
 	}
 
 	@Override
-	protected void renderContent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void renderContent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final String common = readTemplateFile("/search/common.html");
 		final String specific = readTemplateFile("/" + getLabel() + "/plugin.html");
 		final String content = StrSubstitutor.replace(specific, ImmutableMap.of("common", common));
@@ -33,7 +32,11 @@ public abstract class AbstractPlugin extends AbstractWebConsolePlugin {
 		response.getWriter().write(content);
 	}
 
-	protected Dictionary<String, Object> createProps() {
+	public abstract String getLabel();
+
+	public abstract String getTitle();
+
+	public Dictionary<String, Object> getProps() {
 		final Dictionary<String, Object> props = new Hashtable<>();
 
 		props.put("felix.webconsole.label", getLabel());
@@ -41,18 +44,4 @@ public abstract class AbstractPlugin extends AbstractWebConsolePlugin {
 
 		return props;
 	}
-
-	public void register() {
-		bundleContext.registerService(Servlet.class.getName(), this, createProps());
-	}
-
-	public URL getResource(final String path) {
-		String prefix = "/" + getLabel() + "/";
-		if (path.startsWith(prefix)) {
-			return this.getClass().getResource(path);
-		}
-
-		return null;
-	}
-
 }
