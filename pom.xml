@@ -95,16 +95,12 @@
                         <Bundle-Description>${project.description}</Bundle-Description>
                         <Bundle-SymbolicName>com.neva.felix.webconsole.plugins.search</Bundle-SymbolicName>
                         <Bundle-Activator>com.neva.felix.webconsole.plugins.search.SearchActivator</Bundle-Activator>
-                        <Import-Package>javax.management.*,javax.lang.*,org.slf4j.*,org.osgi.*</Import-Package>
+                        <Import-Package>javax.management.*,javax.lang.*,org.slf4j.*,org.osgi.*,jakarta.servlet.*,org.apache.felix.webconsole.*</Import-Package>
                         <DynamicImport-Package>
                             org.osgi.service.log;version="[1.3,2)",
                             org.osgi.service.cm;version="[1.2,2)",
                             org.osgi.service.metatype;version="[1.1,2)",
                             org.osgi.util.tracker;version="[1.5.1,2)",
-                            jakarta.servlet;version="[2.3,4)",
-                            jakarta.servlet.http;version="[2.3,4)",
-                            org.apache.felix.webconsole;version="[4.9,5)",
-                            org.apache.felix.webconsole.servlet;version="[4.9,5)"
                         </DynamicImport-Package>
                         <Private-Package>
                             com.neva.felix.webconsole.plugins.search.*,
