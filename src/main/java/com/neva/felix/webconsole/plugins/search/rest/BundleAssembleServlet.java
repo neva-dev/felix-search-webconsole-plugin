@@ -3,18 +3,16 @@ package com.neva.felix.webconsole.plugins.search.rest;
 import static com.neva.felix.webconsole.plugins.search.utils.JsonUtils.MessageType;
 import static com.neva.felix.webconsole.plugins.search.utils.JsonUtils.writeMessage;
 
-import com.google.common.collect.Lists;
 import com.neva.felix.webconsole.plugins.search.core.BundleJar;
 import com.neva.felix.webconsole.plugins.search.core.OsgiExplorer;
 import com.neva.felix.webconsole.plugins.search.core.SearchMonitor;
 import com.neva.felix.webconsole.plugins.search.core.bundleassemble.BundleAssembleJob;
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

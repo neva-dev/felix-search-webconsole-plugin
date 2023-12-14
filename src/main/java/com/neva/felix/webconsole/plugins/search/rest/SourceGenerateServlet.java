@@ -4,13 +4,13 @@ import com.neva.felix.webconsole.plugins.search.core.BundleClass;
 import com.neva.felix.webconsole.plugins.search.core.OsgiExplorer;
 import com.neva.felix.webconsole.plugins.search.core.SearchMonitor;
 import com.neva.felix.webconsole.plugins.search.core.sourcegenerator.SourceGeneratorJob;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Set;
 
