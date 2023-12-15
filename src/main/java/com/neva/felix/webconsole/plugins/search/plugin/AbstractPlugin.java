@@ -5,7 +5,6 @@ import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.felix.webconsole.AbstractWebConsolePlugin;
 import org.osgi.framework.BundleContext;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +32,7 @@ public abstract class AbstractPlugin extends AbstractWebConsolePlugin {
 		response.getWriter().write(content);
 	}
 
-	protected Dictionary<String, Object> createProps() {
+	public Dictionary<String, Object> getProps() {
 		final Dictionary<String, Object> props = new Hashtable<>();
 
 		props.put("felix.webconsole.label", getLabel());
@@ -42,10 +41,8 @@ public abstract class AbstractPlugin extends AbstractWebConsolePlugin {
 		return props;
 	}
 
-	public void register() {
-		bundleContext.registerService(Servlet.class.getName(), this, createProps());
-	}
 
+	// do not remove it - https://felix.apache.org/documentation/subprojects/apache-felix-web-console/extending-the-apache-felix-web-console/providing-resources.html
 	public URL getResource(final String path) {
 		String prefix = "/" + getLabel() + "/";
 		if (path.startsWith(prefix)) {
@@ -54,5 +51,4 @@ public abstract class AbstractPlugin extends AbstractWebConsolePlugin {
 
 		return null;
 	}
-
 }

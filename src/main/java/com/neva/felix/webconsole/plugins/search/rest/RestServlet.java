@@ -1,6 +1,5 @@
 package com.neva.felix.webconsole.plugins.search.rest;
 
-import com.neva.felix.webconsole.plugins.search.core.SearchPaths;
 import com.neva.felix.webconsole.plugins.search.utils.TemplateRenderer;
 import org.osgi.framework.BundleContext;
 
@@ -23,13 +22,8 @@ public abstract class RestServlet extends HttpServlet {
 
 	public Dictionary<String, Object> createProps() {
 		Dictionary<String, Object> props = new Hashtable<>();
-		props.put("alias", getAlias());
-
+		props.put("osgi.http.whiteboard.servlet.pattern", "/search/" + getAliasName());
+		props.put("osgi.http.whiteboard.context.select", "(osgi.http.whiteboard.context.name=org.apache.felix.webconsole)");
 		return props;
 	}
-
-	public String getAlias() {
-		return SearchPaths.from(bundleContext).pluginAlias(getAliasName());
-	}
-
 }
