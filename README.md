@@ -44,10 +44,10 @@ Manually install ready to use bundle *search-webconsole-plugin-x.x.x.jar* using 
 
 ### Compatibility
 
-| Search Plugin | Apache Felix Web Console (Sling/Karaf) | AEM Classic  | AEM SDK       |
-|---------------|----------------------------------------|--------------|---------------|
-| &lt;= 2.0.0   | &lt; 4.9.6                             | &lt; 6.5.19  | &lt; 2023.11  |
-| &gt;= 2.0.2   | &gt;= 4.9.6                            | &gt;= 6.5.19 | &gt;= 2023.11 |
+| Search Plugin | Apache Felix Web Console | AEM Classic  | AEM SDK       |
+|---------------|--------------------------|--------------|---------------|
+| &lt;= 2.0.0   | &lt; 4.9.6               | &lt; 6.5.19  | &lt; 2023.11  |
+| &gt;= 2.0.2   | &gt;= 4.9.6              | &gt;= 6.5.19 | &gt;= 2023.11 |
 
 ## Build
 
