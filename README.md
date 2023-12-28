@@ -46,8 +46,8 @@ Manually install ready to use bundle *search-webconsole-plugin-x.x.x.jar* using 
 
 | Search Plugin | Apache Felix Web Console | AEM Classic  | AEM SDK       |
 |---------------|--------------------------|--------------|---------------|
-| &lt;= 2.0.0   | &lt; 4.9.6               | &lt; 6.5.19  | &lt; 2023.11  |
-| &gt;= 2.0.2   | &gt;= 4.9.6              | &gt;= 6.5.19 | &gt;= 2023.11 |
+| &lt;= 2.0.0   | &lt; 4.8.4               | &lt; 6.5.18  | &lt; 2023.11  |
+| &gt;= 2.0.2   | &gt;= 4.8.4              | &gt;= 6.5.18 | &gt;= 2023.11 |
 
 ## Build
 
