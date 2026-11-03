@@ -12,9 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class BundleAssembleServlet extends RestServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(BundleAssembleServlet.class);
 
-    public static final String ALIAS_NAME = "bundle-assemble";
+    public static final String ALIAS_NAME = "bundle-assemble.json";
 
     private final SearchMonitor<BundleAssembleJob> monitor;
 
@@ -36,7 +36,7 @@ public class BundleAssembleServlet extends RestServlet {
     }
 
     @Override
-    protected String getAliasName() {
+    public String getAliasName() {
         return ALIAS_NAME;
     }
 

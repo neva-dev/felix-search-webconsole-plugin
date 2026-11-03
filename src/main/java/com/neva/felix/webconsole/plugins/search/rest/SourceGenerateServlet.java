@@ -8,9 +8,9 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Set;
 
@@ -21,7 +21,7 @@ public class SourceGenerateServlet extends RestServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(SourceGenerateServlet.class);
 
-    public static final String ALIAS_NAME = "source-generate";
+    public static final String ALIAS_NAME = "source-generate.json";
 
     private final SearchMonitor<SourceGeneratorJob> monitor;
 
@@ -34,7 +34,7 @@ public class SourceGenerateServlet extends RestServlet {
     }
 
     @Override
-    protected String getAliasName() {
+    public String getAliasName() {
         return ALIAS_NAME;
     }
 

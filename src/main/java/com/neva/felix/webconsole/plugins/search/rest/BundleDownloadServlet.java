@@ -8,9 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import static com.neva.felix.webconsole.plugins.search.utils.JsonUtils.MessageTy
 
 public class BundleDownloadServlet extends RestServlet {
 
-    public static final String ALIAS_NAME = "bundle-download";
+    public static final String ALIAS_NAME = "bundle-download.jar";
 
     public static final String ID_PARAM = "id";
 
@@ -39,7 +39,7 @@ public class BundleDownloadServlet extends RestServlet {
     }
 
     @Override
-    protected String getAliasName() {
+    public String getAliasName() {
         return ALIAS_NAME;
     }
 

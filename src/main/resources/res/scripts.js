@@ -29,7 +29,7 @@ $(function () {
     }
 
     searchXhr = $.ajax({
-        url: pluginRoot + '/by-phrase',
+        url: pluginRoot + '/by-phrase.json',
         type: 'GET',
         data: $form.serializeArray(),
         beforeSend: function () {
@@ -152,7 +152,7 @@ $(function () {
                 $link.on('click', function () {
                     $.ajax({
                         type: 'GET',
-                        url: pluginRoot + '/by-phrase',
+                        url: pluginRoot + '/by-phrase.json',
                         data: {
                             phrase: className,
                             provider: 'class',
@@ -288,7 +288,7 @@ $(function () {
 
             $.ajax({
                 type: 'POST',
-                url: pluginRoot + '/class-search',
+                url: pluginRoot + '/class-search.json',
                 data: {
                     phrase: $('input[name=text]', $form).val(),
                     bundleId: bundleData.bundleIds,
@@ -309,7 +309,7 @@ $(function () {
                     jobPoll = setInterval(function () {
                         $.ajax({
                             type: 'GET',
-                            url: pluginRoot + '/class-search?jobId=' + job.id,
+                            url: pluginRoot + '/class-search.json?jobId=' + job.id,
                             success: function (response) {
                                 var job = response.data;
 
@@ -356,7 +356,7 @@ $(function () {
 
             $.ajax({
                 type: 'DELETE',
-                url: pluginRoot + '/class-search?jobId=' + jobCurrent.id,
+                url: pluginRoot + '/class-search.json?jobId=' + jobCurrent.id,
                 success: function (response) {
                     var job = response.data;
 
@@ -434,7 +434,7 @@ $(function () {
 
             $.ajax({
                 type: 'POST',
-                url: pluginRoot + '/source-generate',
+                url: pluginRoot + '/source-generate.json',
                 data: {
                     bundleId: bundleData.bundleIds,
                     bundleClass: bundleData.bundleClasses
@@ -454,7 +454,7 @@ $(function () {
                     jobPoll = setInterval(function () {
                         $.ajax({
                             type: 'GET',
-                            url: pluginRoot + '/source-generate?jobId=' + job.id,
+                            url: pluginRoot + '/source-generate.json?jobId=' + job.id,
                             success: function (response) {
                                 var job = response.data;
 
@@ -495,7 +495,7 @@ $(function () {
 
             $.ajax({
                 type: 'DELETE',
-                url: pluginRoot + '/source-generate?jobId=' + jobCurrent.id,
+                url: pluginRoot + '/source-generate.json?jobId=' + jobCurrent.id,
                 success: function (response) {
                     var job = response.data;
 
@@ -578,7 +578,7 @@ $(function () {
 
             $.ajax({
                 type: 'POST',
-                url: pluginRoot + '/bundle-assemble',
+                url: pluginRoot + '/bundle-assemble.json',
                 data: {
                     bundleId: bundleData.bundleIds
                 },
@@ -597,7 +597,7 @@ $(function () {
                     jobPoll = setInterval(function () {
                         $.ajax({
                             type: 'GET',
-                            url: pluginRoot + '/bundle-assemble?jobId=' + job.id,
+                            url: pluginRoot + '/bundle-assemble.json?jobId=' + job.id,
                             success: function (response) {
                                 var job = response.data;
 
@@ -638,7 +638,7 @@ $(function () {
 
             $.ajax({
                 type: 'DELETE',
-                url: pluginRoot + '/bundle-assemble?jobId=' + jobCurrent.id,
+                url: pluginRoot + '/bundle-assemble.json?jobId=' + jobCurrent.id,
                 success: function (response) {
                     var job = response.data;
 
