@@ -59,6 +59,11 @@ Since 3.0.0 the plugin is a plain Jakarta Servlet without any Web Console API de
 Build and deploy automatically using command: `mvn clean package sling:install`.
 Do not hesistate to fork and create pull requests.
 
+## Release
+
+Push a tag like `v3.0.0` to release version `3.0.0`.
+The bundle is then published to [GitHub Packages](https://github.com/neva-dev/felix-search-webconsole-plugin/packages) and attached to [GitHub Releases](https://github.com/neva-dev/felix-search-webconsole-plugin/releases).
+
 ## Configuration
 
 ### Deployment
