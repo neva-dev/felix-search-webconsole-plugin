@@ -9,9 +9,9 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.framework.BundleContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +21,7 @@ import static com.neva.felix.webconsole.plugins.search.utils.JsonUtils.writeMess
 
 public class ByPhraseServlet extends RestServlet {
 
-	public static final String ALIAS_NAME = "by-phrase";
+	public static final String ALIAS_NAME = "by-phrase.json";
 
 	public static final String PHRASE_PARAM = "phrase";
 
@@ -39,7 +39,7 @@ public class ByPhraseServlet extends RestServlet {
 	}
 
 	@Override
-	protected String getAliasName() {
+	public String getAliasName() {
 		return ALIAS_NAME;
 	}
 

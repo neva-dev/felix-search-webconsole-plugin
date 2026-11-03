@@ -1,6 +1,5 @@
 package com.neva.felix.webconsole.plugins.search;
 
-import com.neva.felix.webconsole.plugins.search.core.SearchService;
 import com.neva.felix.webconsole.plugins.search.plugin.AbstractPlugin;
 import com.neva.felix.webconsole.plugins.search.plugin.SearchPlugin;
 import com.google.common.collect.ImmutableSet;
@@ -11,7 +10,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -32,14 +31,6 @@ public class SearchActivator implements BundleActivator {
 				LOG.error("Cannot register plugin '{}' as OSGi service", plugin.getClass().getName());
 			}
 		}
-		for (RestServlet servlet : getServlets(bundleContext)) {
-			ServiceRegistration service = bundleContext.registerService(Servlet.class.getName(), servlet, servlet.createProps());
-			if (service != null) {
-				services.add(service);
-			} else {
-				LOG.error("Cannot register plugin servlet '{}' as OSGi service", servlet.getClass().getName());
-			}
-		}
 	}
 
 	@Override
@@ -51,7 +42,7 @@ public class SearchActivator implements BundleActivator {
 
 	private Set<AbstractPlugin> getPlugins(BundleContext bundleContext) {
 		return ImmutableSet.of(
-				new SearchPlugin(bundleContext)
+				new SearchPlugin(bundleContext, getServlets(bundleContext))
 		);
 	}
 

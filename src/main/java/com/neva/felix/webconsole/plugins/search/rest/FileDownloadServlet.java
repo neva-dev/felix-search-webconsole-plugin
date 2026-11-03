@@ -7,9 +7,9 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import static com.neva.felix.webconsole.plugins.search.utils.JsonUtils.writeMess
 
 public class FileDownloadServlet extends RestServlet {
 
-    public static final String ALIAS_NAME = "file-download";
+    public static final String ALIAS_NAME = "file-download.zip";
 
     private static final Logger LOG = LoggerFactory.getLogger(FileDownloadServlet.class);
 
@@ -34,7 +34,7 @@ public class FileDownloadServlet extends RestServlet {
     }
 
     @Override
-    protected String getAliasName() {
+    public String getAliasName() {
         return ALIAS_NAME;
     }
 

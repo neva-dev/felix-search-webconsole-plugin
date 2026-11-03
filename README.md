@@ -48,7 +48,11 @@ Manually install ready to use bundle *search-webconsole-plugin-x.x.x.jar* using 
 |---------------|--------------------------|--------------|---------------|
 | &lt; 2.0.0    | ~ 4.3.8                  | ~ 6.5.0      | &mdash;       |
 | &lt;= 2.0.0   | &lt; 4.8.4               | &lt; 6.5.18  | &lt; 2023.11  |
-| &gt;= 2.0.2   | &gt;= 4.8.4              | &gt;= 6.5.18 | &gt;= 2023.11 |
+| 2.0.2         | &gt;= 4.8.4              | &gt;= 6.5.18 | &gt;= 2023.11 (\*) |
+| &gt;= 3.0.0   | &gt;= 5.0.0 (Jakarta)    | &mdash;      | with Web Console &gt;= 5.0.0 |
+
+(\*) Newer AEM SDK versions (e.g. 2026.10) no longer expose the Web Console API (`org.apache.felix.webconsole`) to custom bundles, so 2.0.2 cannot start there.
+Since 3.0.0 the plugin is a plain Jakarta Servlet without any Web Console API dependency.
 
 ## Build
 
