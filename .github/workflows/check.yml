@@ -1,0 +1,30 @@
+name: Check
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore: ['**.md', 'doc/**']
+  pull_request:
+    branches: [ main ]
+    paths-ignore: ['**.md', 'doc/**']
+  workflow_call:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7
+
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build Code
+        run: mvn -B clean verify
